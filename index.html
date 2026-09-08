@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân Tích Giai Đoạn 4 - Lịch Sử Khoa Học Tự Nhiên (Bố cục Desktop)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Be Vietnam Pro & Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:wght@600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            overflow: hidden;
+            background-color: #1c1510;
+            color: #f3ebd8;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .slide-container {
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 60px; /* Padding lớn cho desktop */
+            position: relative;
+        }
+
+        /* Định dạng chung cho vùng chứa nội dung (CSS Grid) */
+        .content-wrapper {
+            max-width: 1300px; /* Giới hạn chiều rộng tối đa cho desktop */
+            width: 100%;
+            margin: 0 auto;
+            display: grid;
+            gap: 60px; /* Khoảng cách giữa cột văn bản và ảnh */
+            align-items: center; /* Căn giữa theo chiều dọc */
+        }
+
+        /* Bố cục chia đôi (50/50) */
+        .grid-cols-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        /* Định dạng cho khối văn bản */
+        .text-block {
+            background: #241b14;
+            padding: 50px;
+            border-radius: 20px;
+            border: 1px solid rgba(140, 109, 72, 0.4);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* Định dạng cho khối hình ảnh */
+        .image-block {
+            border-radius: 20px;
+            border: 4px solid rgba(140, 109, 72, 0.4);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            overflow: hidden;
+            background: #140e0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            height: 500px; /* Chiều cao cố định cho ảnh */
+        }
+
+        .image-block img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Chú thích ảnh */
+        .image-block p {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            background-color: rgba(20, 14, 10, 0.75); /* Nền tối mờ */
+            color: #ffd700;
+            font-style: italic;
+            border-radius: 10px;
+            z-index: 10;
+            text-align: center;
+        }
+
+        /* Scrollbar tùy chỉnh */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #8c6d48;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="w-screen h-screen relative select-none overflow-hidden bg-[#1c1510]">
+
+    <!-- KHUNG VIỀN TRANG TRÍ CỔ ĐIỂN -->
+    <div class="absolute inset-4 border-4 border-[#8c6d48]/30 pointer-events-none z-40 rounded-2xl hidden lg:block"></div>
+
+    <!-- HEADER / NAVIGATION HUD -->
+    <header class="absolute top-0 left-0 w-full z-50 flex justify-between items-center px-12 py-5 bg-[#140e0a]/95 backdrop-blur-md border-b border-[#8c6d48]/30">
+        <div class="flex items-center space-x-4">
+            <div class="bg-[#8c6d48] p-3 rounded-xl text-[#f3ebd8] shadow-lg">
+                <i class="fa-solid fa-scroll text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold tracking-wider text-[#ffd700] uppercase title-font">Đại cương Khoa học Tự nhiên - Nhóm 3</h1>
+                <p class="text-sm text-[#b8a38c]">ĐH Sư phạm Hà Nội 2 - Giai đoạn 4: Thế kỷ XIX</p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-4 text-sm font-medium">
+            <div class="bg-[#241b14] px-5 py-2 rounded-full border border-[#8c6d48]/50 text-[#ffd700] shadow-inner">
+                <span>Slide:</span> <span id="slide-indicator" class="font-bold text-base">1 / 13</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- NÚT ĐIỀU HƯỚNG DƯỚI MÀN HÌNH -->
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center space-x-4 bg-[#140e0a]/95 px-6 py-3 rounded-full border border-[#8c6d48]/50 text-sm text-[#ffd700] shadow-2xl backdrop-blur-md">
+        <button onclick="prevSlide()" class="hover:text-white px-3 py-1 transition rounded-full hover:bg-[#8c6d48]/20"><i class="fa-solid fa-chevron-left"></i></button>
+        <span class="text-[#b8a38c]">Sử dụng phím mũi tên (← →) hoặc con lăn chuột để chuyển slide</span>
+        <button onclick="nextSlide()" class="hover:text-white px-3 py-1 transition rounded-full hover:bg-[#8c6d48]/20"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+
+    <!-- KHUNG CHỨA TOÀN BỘ SLIDE (SỬ DỤNG CSS FLEXBOX) -->
+    <div id="presentation-slider" class="slide-container">
+
+        <!-- ================= SLIDE 1: BÌA ĐỀ TÀI ================= -->
+        <div class="slide bg-gradient-to-b from-[#1c1510] via-[#2a1d13] to-[#140e0a]">
+            <div class="max-w-5xl text-center bg-[#241b14]/95 p-16 rounded-3xl border-4 border-[#ffd700]/60 shadow-[0_0_50px_rgba(255,215,0,0.3)] relative">
+                <div class="absolute -top-7 left-1/2 -translate-x-1/2 bg-[#8c6d48] text-[#f3ebd8] text-sm tracking-widest uppercase px-8 py-2 rounded-full title-font font-bold shadow-lg">Nhóm 3 • Bài tập lớn</div>
+                <h2 class="text-7xl font-extrabold mt-6 text-[#ffd700] leading-tight title-font">Phân tích Giai đoạn 4:<br><span class="text-5xl text-[#f3ebd8] font-normal font-sans mt-3 block">(Thế kỷ XIX - Chuyên môn hóa và tổng hợp)</span></h2>
+                <p class="mt-10 text-[#ffd700] text-2xl font-semibold">Thực hiện: Nhóm 3</p>
+                <p class="text-[#b8a38c] text-xl mt-1">Giải đáp 5 câu hỏi định hướng trọng tâm</p>
+            </div>
+        </div>
+
+        <!-- ================= SLIDE 2: CÂU HỎI 1 - PHƯƠNG PHÁP LUẬN ================= -->
+        <div class="slide bg-[#1c1510]">
+            <div class="content-wrapper grid-cols-2">
+                <div class="text-block space-y-6">
+                    <span class="text-sm uppercase tracking-widest text-[#ffd700] font-bold title-font">Câu hỏi 1 / 5</span>
+                    <h2 class="text-4xl font-extrabold text-[#ffd700] title-font leading-tight">1. Con người tích lũy tri thức dựa trên hình thức nào?</h2>
+                    <p class="text-xl text-[#f3ebd8] leading-relaxed">
+                        Tri thức ở thế kỷ XIX được tích lũy chủ yếu thông qua <strong class="text-[#ffd700]">phương pháp thực nghiệm khoa học kết hợp tư duy lý luận chặt chẽ</strong>.
+                    </p>
+                    <p class="text-lg text-[#f3ebd8] leading-relaxed">
+                        Khoa học phân rã sâu sắc thành các chuyên ngành độc lập nhưng đồng thời thiết lập mối liên hệ tổng hợp toàn diện trong hệ thống phòng thí nghiệm hiện đại.
+                    </p>
+                </div>
+                <div class="image-block">
+                    <img src="https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=1200&q=80" alt="Thiết bị nghiên cứu thế kỷ XIX">
+                    <p>Minh họa các thiết bị nghiên cứu khoa học thực nghiệm điển hình của thế kỷ XIX.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SLIDE 3: CÂU HỎI 2 - TỔNG QUAN CÁC PHÁT MINH ================= -->
+        <div class="slide bg-[#1c1510]">
+            <div class="max-w-6xl text-center bg-[#241b14] p-16 rounded-3xl border border-[#8c6d48]/40 shadow-xl">
+                <span class="text-sm uppercase tracking-widest text-[#ffd700] font-bold title-font">Câu hỏi 2 / 5</span>
+                <h2 class="text-5xl font-extrabold mt-4 text-[#ffd700] title-font">2. Nêu một số phát minh quan trọng của giai đoạn này</h2>
+                <p class="mt-8 text-2xl text-[#f3ebd8] leading-relaxed max-w-4xl mx-auto">Giai đoạn này nổi bật với 3 phát minh vĩ đại làm thay đổi căn bản thế giới quan khoa học, đập tan quan điểm siêu hình.</p>
+                <div class="grid grid-cols-3 gap-10 mt-16 text-left">
+                    <div class="bg-[#140e0a] p-10 rounded-2xl border border-[#8c6d48]/50 space-y-4">
+                        <i class="fa-solid fa-bolt text-5xl text-[#ffd700]"></i>
+                        <h3 class="text-3xl font-bold text-[#ffd700]">Bảo toàn năng lượng</h3>
+                        <p class="text-[#b8a38c] text-lg">Chứng minh sự chuyển hóa lẫn nhau giữa các hình thức vận động vật chất.</p>
+                    </div>
+                    <div class="bg-[#140e0a] p-10 rounded-2xl border border-[#8c6d48]/50 space-y-4">
+                        <i class="fa-solid fa-bacteria text-5xl text-[#ffd700]"></i>
+                        <h3 class="text-3xl font-bold text-[#ffd700]">Thuyết tế bào</h3>
+                        <p class="text-[#b8a38c] text-lg">Xác định tế bào là đơn vị cơ bản của mọi cơ thể sống.</p>
+                    </div>
+                    <div class="bg-[#140e0a] p-10 rounded-2xl border border-[#8c6d48]/50 space-y-4">
+                        <i class="fa-solid fa-dna text-5xl text-[#ffd700]"></i>
+                        <h3 class="text-3xl font-bold text-[#ffd700]">Thuyết tiến hóa</h3>
+                        <p class="text-[#b8a38c] text-lg">Giải thích nguồn gốc và sự đa dạng của sinh giới qua chọn lọc tự nhiên.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SLIDE 4: PHÁT MINH CHI TIẾT 1 - NĂNG LƯỢNG ================= -->
+        <div class="slide bg-[#1c1510]">
+            <div class="content-wrapper grid-cols-2">
+                <div class="text-block space-y-6">
+                    <span class="text-sm uppercase tracking-widest text-[#ffd700] font-bold title-font">2.1. Vật lý</span>
+                    <h2 class="text-4xl font-extrabold text-[#ffd700] title-font leading-tight">Định luật bảo toàn và chuyển hóa năng lượng</h2>
+                    <p class="text-xl text-[#f3ebd8] leading-relaxed">
+                        Là sự tổng kết thực nghiệm vĩ đại của nhiều nhà khoa học (Mayer, Joule, Helmholtz).
+                    </p>
+                    <p class="text-lg text-[#f3ebd8] leading-relaxed">
+                        Định luật chứng minh rằng năng lượng không tự sinh ra hoặc mất đi, mà chỉ chuyển hóa từ dạng này sang dạng khác hoặc truyền từ vật này sang vật khác, với một lượng tương đương.
+                    </p>
+                </div>
+                <div class="image-block p-8 bg-white">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Energy_conservation.svg" alt="Minh họa bảo toàn năng lượng" class="object-contain">
+                    <p>Sơ đồ chuyển hóa năng lượng trong tự nhiên.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SLIDE 5: PHÁT MINH CHI TIẾT 2 - THUYẾT TẾ BÀO ================= -->
+        <div class="slide bg-[#1c1510]">
+            <div class="content-wrapper grid-cols-2">
+                <div class="text-block space-y-6">
+                    <span class="text-sm uppercase tracking-widest text-[#ffd700] font-bold title-font">2.2. Sinh học</span>
+                    <h2 class="text-4xl font-extrabold text-[#ffd700] title-font leading-tight
