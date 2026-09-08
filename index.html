@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hành Trình Lịch Sử - Bản Thảo Thuyết Trình</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f4ecd8;
+            --paper-color: #fbf5e6;
+            --text-color: #2c221e;
+            --accent-color: #8b4513;
+            --accent-hover: #5c2c16;
+            --border-color: #d1b280;
+            --shadow: 0 10px 30px rgba(44, 34, 30, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Lora', serif;
+            line-height: 1.8;
+            padding: 20px;
+            background-image: radial-gradient(#e6d5b8 15%, transparent 16%), radial-gradient(#e6d5b8 15%, transparent 16%);
+            background-size: 60px 60px;
+            background-position: 0 0, 30px 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: var(--paper-color);
+            border: 3px solid var(--accent-color);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            position: relative;
+        }
+
+        /* Viền trang trí cổ điển bên trong */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 6px;
+            border: 1px dashed var(--accent-color);
+            pointer-events: none;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 25px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-style: italic;
+            font-size: 1.1rem;
+            color: #55433d;
+        }
+
+        .slide-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .nav-btn {
+            background-color: transparent;
+            border: 2px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 8px 16px;
+            font-family: 'Cinzel', serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background-color: var(--accent-color);
+            color: var(--paper-color);
+        }
+
+        .slide-section {
+            display: none;
+            animation: fadeIn 0.6s ease-in-out;
+        }
+
+        .slide-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-color);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        p {
+            margin-bottom: 20px;
+            text-align: justify;
+            font-size: 1.05rem;
+        }
+
+        ul {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        .highlight-box {
+            background-color: #f2e5cc;
+            border-left: 4px solid var(--accent-color);
+            padding: 20px;
+            margin: 20px 0;
+            font-style: italic;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            border-top: 2px solid var(--accent-color);
+            padding-top: 20px;
+            font-size: 0.9rem;
+            font-family: 'Cinzel', serif;
+            color: var(--accent-color);
+        }
+
+        /* Responsive cho điện thoại */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            h2 {
+                font-size: 1.4rem;
+            }
+
+            .nav-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Hành Trình Lịch Sử</h1>
+            <div class="subtitle">Di sản, Bài học và Góc nhìn Thế hệ Trẻ</div>
+        </header>
+
+        <!-- Thanh chuyển đổi các phần thuyết trình -->
+        <div class="slide-nav">
+            <button class="nav-btn active" onclick="showSlide(0)">1. Dẫn Nhập</button>
+            <button class="nav-btn" onclick="showSlide(1)">2. Dấu Mốc</button>
+            <button class="nav-btn" onclick="showSlide(2)">3. Phân Tích</button>
+            <button class="nav-btn" onclick="showSlide(3)">4. Tổng Kết</button>
+        </div>
+
+        <!-- Nội dung Slide 1 -->
+        <section class="slide-section active" id="slide-0">
+            <h2>Lời Dẫn Nhập</h2>
+            <p>Lịch sử không chỉ là những trang giấy cũ kỹ hay các con số năm tháng khô khan. Lịch sử là cội nguồn, là tấm gương phản chiếu hành trình phát triển của nhân loại và dân tộc qua từng thời kỳ.</p>
+            <div class="highlight-box">
+                "Dân ta phải biết sử ta, cho tường gốc tích nước nhà Việt Nam." — Chủ tịch Hồ Chí Minh
+            </div>
+            <p>Bài thuyết trình này được biên soạn bởi tập thể sinh viên nhằm đem đến một góc nhìn mới mẻ, kết hợp giữa giá trị truyền thống và phương pháp tiếp cận hiện đại dành cho người xem.</p>
+        </section>
+
+        <!-- Nội dung Slide 2 -->
+        <section class="slide-section" id="slide-1">
+            <h2>Các Dấu Mốc Lịch Sử Tiêu Biểu</h2>
+            <p>Trong chặng đường phát triển, có những bước ngoặt mang tính quyết định định hình nên diện mạo hôm nay:</p>
+            <ul>
+                <li><strong>Giai đoạn khởi nguyên:</strong> Nền văn minh lúa nước, dựng nước và giữ nước từ thuở các vua Hùng.</li>
+                <li><strong>Thời kỳ phong kiến độc lập:</strong> Những chiến công hiển hách chống giặc ngoại xâm, khẳng định chủ quyền độc lập dân tộc.</li>
+                <li><strong>Kỷ nguyên hiện đại:</strong> Cuộc đấu tranh giành độc lập, tự do, thống nhất đất nước và bước đi trên con đường hội nhập quốc tế.</li>
+            </ul>
+        </section>
+
+        <!-- Nội dung Slide 3 -->
+        <section class="slide-section" id="slide-2">
+            <h2>Góc Nhìn & Phân Tích Từ Sinh Viên</h2>
+            <p>Đối với thế hệ trẻ ngày nay, việc học lịch sử không chỉ là ghi nhớ sự kiện mà là kế thừa tinh thần tự cường, sáng tạo ứng dụng công nghệ để lan tỏa giá trị văn hóa.</p>
+            <p>Chúng tôi đề xuất việc số hóa các tư liệu lịch sử, xây dựng các không gian trải nghiệm trực quan để lịch sử trở nên gần gũi hơn với cộng đồng và học sinh, sinh viên.</p>
+        </section>
+
+        <!-- Nội dung Slide 4 -->
+        <section class="slide-section" id="slide-3">
+            <h2>Tổng Kết & Định Hướng</h2>
+            <p>Khép lại bản thuyết trình, chúng tôi hy vọng mang lại nguồn cảm hứng khám phá quá khứ, từ đó trân trọng hơn hiện tại và vững bước tới tương lai.</p>
+            <div class="highlight-box">
+                Cảm ơn Quý thầy cô và các bạn sinh viên đã lắng nghe. Chúng tôi rất mong nhận được ý kiến đóng góp từ mọi người!
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2026 - Dự Án Thuyết Trình Lịch Sử Sinh Viên</p>
+        </footer>
+    </div>
+
+    <script>
+        function showSlide(index) {
+            const sections = document.querySelectorAll('.slide-section');
+            const buttons = document.querySelectorAll('.nav-btn');
+
+            sections.forEach((section, idx) => {
+                section.classList.remove('active');
+                buttons[idx].classList.remove('active');
+                if(idx === index) {
+                    section.classList.add('active');
+                    buttons[idx].classList.add('active');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
