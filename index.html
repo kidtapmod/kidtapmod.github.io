@@ -1,0 +1,28 @@
+/* --- Tối ưu cho Điện thoại (Màn hình hẹp) --- */
+@media (max-width: 1023px) {
+    .slide {
+        /* THAY ĐỔI DÒNG NÀY */
+        /* overflow-y: auto; */ /* Xóa bỏ cái cũ */
+        overflow: hidden;   /* Thêm cái mới */
+        padding-top: 80px;
+        padding-bottom: 100px; /* Tăng padding đáy một chút để tránh nút điều hướng che nội dung */
+    }
+    /* ... các phần khác giữ nguyên ... */
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        width: 100%;
+        height: 100%; /* Đảm bảo wrapper chiếm đủ chiều cao */
+        justify-content: center; /* Căn giữa nội dung */
+        padding: 0 20px;
+    }
+    /* Ẩn bớt các phần tử trang trí nếu quá chật */
+    .title-font p {
+        font-size: 10px;
+    }
+    /* Ẩn khung viền trang trí trên mobile cho thoáng */
+    .border-2.inset-2 {
+        display: none;
+    }
+}
