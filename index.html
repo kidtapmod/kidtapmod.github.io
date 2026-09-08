@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Phân Tích Giai Đoạn 4 - Lịch Sử Khoa Học Tự Nhiên</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:wght@600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            overflow: hidden;
+            background-color: #1c1510;
+            color: #f3ebd8;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+            touch-action: none;
+        }
+
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .slide-container {
+            transition: transform 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            width: 100%;
+            will-change: transform;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            box-sizing: border-box;
+            padding: 60px 16px 90px 16px; /* Chừa chỗ cho header và footer */
+            overflow: hidden;
+        }
+
+        /* --- Tối ưu hiển thị tuyệt đối trên Mobile không bị tràn ---. */
+        .mobile-card {
+            background: #241b14;
+            padding: 16px;
+            border-radius: 14px;
+            border: 1px solid rgba(140, 109, 72, 0.4);
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .mobile-img-container {
+            width: 100%;
+            max-width: 400px;
+            margin-top: 10px;
+            text-align: center;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid rgba(140, 109, 72, 0.4);
+            background: #140e0a;
+            max-height: 28vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* --- Desktop styles --- */
+        @media (min-width: 1024px) {
+            .slide {
+                padding: 100px 60px;
+            }
+            .content-wrapper {
+                max-width: 1200px;
+                width: 100%;
+                margin: 0 auto;
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 50px;
+                align-items: center;
+            }
+            .mobile-card {
+                max-width: 100%;
+                padding: 40px;
+                height: 480px;
+            }
+            .mobile-img-container {
+                max-width: 100%;
+                height: 480px;
+                margin-top: 0;
+            }
+            .nav-bottom {
+                display: none !important;
+            }
+            .border-2.inset-2 {
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+<body class="w-screen h-screen relative select-none overflow-hidden bg-[#1c1510]">
+
+    <!-- KHUNG VIỀN TRANG TRÍ (Desktop) -->
+    <div class="absolute inset-2 border-2 border-[#8c6d48]/40 pointer-events-none z-40 rounded-xl hidden lg:block"></div>
+
+    <!-- HEADER -->
+    <header class="absolute top-0 left-0 w-full z-50 flex justify-between items-center px-4 md:px-12 py-2.5 bg-[#140e0a]/95 backdrop-blur-md border-b border-[#8c6d48]/30 title-font">
+        <div class="flex items-center space-x-2">
+            <div class="bg-[#8c6d48] p-1.5 rounded-lg text-[#f3ebd8]">
+                <i class="fa-solid fa-scroll text-xs"></i>
+            </div>
+            <div>
+                <h1 class="text-[11px] md:text-sm font-bold tracking-wider text-[#ffd700] uppercase">Đại cương KHTN - Nhóm 3</h1>
+                <p class="text-[9px] md:text-xs text-[#b8a38c]">ĐH Sư phạm Hà Nội 2</p>
+            </div>
+        </div>
+
+        <div class="bg-[#241b14] px-2.5 py-1 rounded-full border border-[#8c6d48]/50 text-[#ffd700] text-xs font-medium">
+            <span>Slide:</span> <span id="slide-indicator" class="font-bold">1 / 5</span>
+        </div>
+    </header>
+
+    <!-- NÚT ĐIỀU HƯỚNG DƯỚI (Mobile) -->
+    <div class="nav-bottom absolute bottom-2 left-1/2 -translate-x-1/2 z-50 flex items-center space-x-3 bg-[#140e0a]/95 px-4 py-1.5 rounded-full border border-[#8c6d48]/50 text-[10px] text-[#ffd700] shadow-2xl backdrop-blur-md">
+        <button onclick="prevSlide()" class="hover:text-white px-1"><i class="fa-solid fa-chevron-left"></i></button>
+        <span class="text-[#b8a38c]">Vuốt hoặc dùng phím mũi tên</span>
+        <button onclick="nextSlide()" class="hover:text-white px-1"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+
+    <!-- KHUNG CHỨA TOÀN BỘ SLIDE -->
+    <div id="presentation-slider" class="slide-container w-full h-full absolute top-0 left-0">
+
+        <!-- ================= SLIDE 1 ================= -->
+        <div class="slide bg-gradient-to-b from-[#1c1510] via-[#2a1d13] to-[#140e0a]">
+            <div class="max-w-md w-full text-center bg-[#241b14]/90 p-6 rounded-2xl border-2 border-[#ffd700]/60 shadow-2xl">
+                <span class="bg-[#8c6d48] text-[#f3ebd8] text-[9px] tracking-widest uppercase px-3 py-0.5 rounded-full font-bold">Nhóm 3 • Thuyết trình</span>
+                <h2 class="text-xl md:text-3xl font-extrabold mt-3 text-[#ffd700] leading-snug title-font">Phân tích Giai đoạn 4:<br><span class="text-sm md:text-xl text-[#f3ebd8] font-normal mt-1 block">(Thế kỷ XIX - Chuyên môn hóa & tổng hợp)</span></h2>
+                <p class="mt-4 text-[#ffd700] text-xs font-semibold">Thực hiện: Nhóm 3</p>
+            </div>
+        </div>
+
+        <!-- ================= SLIDE 2 ================= -->
+        <div class="slide bg-[#1c1510]">
+            <div class="content-wrapper">
+                <div class="mobile-card space-y-2">
+                    <span class="text-[10px] uppercase tracking-widest text-[#ffd700] font-bold title-font">Câu hỏi 1 / 5</span>
+                    <h2 class="text-base md:text-2xl font-extrabold text-[#ffd700] title-font">1. Con người tích lũy tri thức dựa trên hình thức nào?</h2>
+                    <p class="text-xs md:text-base text-[#f3ebd8] leading-relaxed">
+                        Tri thức ở thế kỷ XIX được tích lũy chủ yếu thông qua <strong class="text-[#ffd700]">phương pháp thực nghiệm khoa học kết hợp tư duy lý luận chặt chẽ</strong> trong hệ thống phòng thí nghiệm.
+                    </p>
+                </div>
+                <div class="mobile-img-container">
+                    <img src="https://images.unsplash.com/photo-1507668077129-56e32842fceb?auto=format&fit=crop&w=1200&q=80" alt="Thí nghiệm">
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SLIDE 3 (Đúng ảnh tế bào) ================= -->
+        <div class="slide bg-[#1c1510]">
+            <div class="content-wrapper">
+                <div class="mobile-card space-y-2">
+                    <span class="text-[10px] uppercase tracking-widest text-[#ffd700] font-bold title-font">Câu hỏi 2 / 5</span>
+                    <h2 class="text-base md:text-2xl font-extrabold text-[#ffd700] title-font">2. Phát minh quan trọng (Năng lượng & Tế bào)</h2>
+                    <p class="text-xs md:text-base text-[#f3ebd8] leading-relaxed">
+                        <strong class="text-[#ffd700]">Thuyết tế bào:</strong> Khẳng định sự đồng nhất về cấu trúc và nguồn gốc của mọi cơ thể sống từ thực vật đến động vật.
+                    </p>
+                </div>
+                <div class="mobile-img-container">
+                    <img src="https://i.ibb.co/8gdnF7x8/IMG-2293.jpg" alt="Cấu trúc tế bào">
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SLIDE 4 ================= -->
+        <div class="slide bg-[#1c1510]">
+            <div class="content-wrapper">
+                <div class="mobile-card space-y-2">
+                    <span class="text-[10px] uppercase tracking-widest text-[#ffd700] font-bold title-font">Câu hỏi 3 & 4 / 5</span>
+                    <h2 class="text-base md:text-2xl font-extrabold text-[#ffd700] title-font">Tiến hóa, Hóa học & Vật lý</h2>
+                    <p class="text-xs md:text-base text-[#f3ebd8]">
+                        • <strong class="text-[#ffd700]">Thuyết tiến hóa:</strong> Chọn lọc tự nhiên (Darwin).
+                    </p>
+                    <p class="text-xs md:text-base text-[#f3ebd8]">
+                        • <strong class="text-[#ffd700]">Bảng tuần hoàn:</strong> Hệ thống nguyên tố hóa học (Mendeleev).
+                    </p>
+                    <p class="text-xs md:text-base text-[#f3ebd8]">
+                        • <strong class="text-[#ffd700]">Điện từ học:</strong> Phương trình điện từ trường (Maxwell).
+                    </p>
+                </div>
+                <div class="mobile-img-container">
+                    <img src="https://i.ibb.co/CKrcBKnB/IMG-2294.jpg" alt="Bảng tuần hoàn">
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= SLIDE 5 ================= -->
+        <div class="slide bg-[#1c1510]">
+            <div class="content-wrapper">
+                <div class="mobile-card space-y-2">
+                    <span class="text-[10px] uppercase tracking-widest text-[#ffd700] font-bold title-font">Câu hỏi 5 / 5</span>
+                    <h2 class="text-base md:text-2xl font-extrabold text-[#ffd700] title-font">Nhà khoa học tiêu biểu</h2>
+                    <p class="text-xs md:text-base text-[#f3ebd8] leading-relaxed">
+                        <strong class="text-[#ffd700]">Louis Pasteur:</strong> Tiên phong trong lĩnh vực vi sinh học, miễn dịch học, sáng lập phương pháp thanh trùng và phát triển các loại vắc-xin cứu người.
+                    </p>
+                </div>
+                <div class="mobile-img-container">
+                    <img src="https://i.ibb.co/JWk6fj3s/IMG-2291.jpg" alt="Louis Pasteur">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT ĐIỀU KHIỂN -->
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 5;
+        const slider = document.getElementById('presentation-slider');
+        const indicator = document.getElementById('slide-indicator');
+
+        function updateSlide() {
+            slider.style.transform = `translateY(-${currentSlide * 100}vh)`;
+            indicator.textContent = `${currentSlide + 1} / ${totalSlides}`;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') prevSlide();
+        });
+
+        let touchStartY = 0;
+        let touchEndY = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.changedTouches[0].screenY;
+        }, {passive: true});
+
+        document.addEventListener('touchend', (e) => {
+            touchEndY = e.changedTouches[0].screenY;
+            if (touchEndY < touchStartY - 40) nextSlide();
+            if (touchEndY > touchStartY + 40) prevSlide();
+        }, {passive: true});
+    </script>
+</body>
+</html>
