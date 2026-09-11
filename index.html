@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân Tích Giai Đoạn 4 - Lịch Sử Khoa Học Tự Nhiên</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:wght@600;700;900&display=swap"
+          rel="stylesheet">
+    <style>
+        /* =====================================================
+           GIAO DIỆN CHUNG
+        ===================================================== */
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            overflow: hidden;
+            background-color: #1c1510;
+            color: #f3ebd8;
+        }
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+        .slide-container {
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .slide img {
+            object-fit: contain;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+        .avatar-img {
+            object-fit: cover !important;
+            background-color: transparent !important;
+        }
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #8c6d48;
+            border-radius: 2px;
+        }
+        /* =====================================================
+           CÂU HỎI 1
+           3 PHƯƠNG THỨC TÍCH LŨY TRI THỨC
+        ===================================================== */
+        .knowledge-btn {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .knowledge-btn:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 215, 0, 0.7);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        }
+        .knowledge-btn.active {
+            border-color: #ffd700;
+            background-color: #3a2a1d;
+            box-shadow: 0 0 18px rgba(255, 215, 0, 0.15);
+        }
+        .icon-box {
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            background: rgba(140, 109, 72, 0.25);
+            color: #ffd700;
+            border: 1px solid rgba(140, 109, 72, 0.5);
+        }
+        .knowledge-answer {
+            display: none;
+            padding: 18px;
+            border-radius: 14px;
+            background: linear-gradient(
+                135deg,
+                rgba(45, 33, 24, 0.98),
+                rgba(36, 27, 20, 0.98)
+            );
+            border: 1px solid rgba(255, 215, 0, 0.35);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            animation: answerAppear 0.35s ease;
+        }
+        .knowledge-answer.show {
+            display: block;
+        }
+        .answer-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .answer-icon {
+            width: 40px;
+            height: 40px;
+            min-width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.35);
+            color: #ffd700;
+        }
+        .answer-header h3 {
+            color: #ffd700;
+            font-family: 'Playfair Display', serif;
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0;
+        }
+        .answer-header span {
+            display: block;
+            color: #b8a38c;
+            font-size: 9px;
+            margin-top: 2px;
+        }
+        .knowledge-answer p {
+            color: #f3ebd8;
+            font-size: 12px;
+            line-height: 1.7;
+            margin: 0;
+        }
+        .knowledge-answer strong {
+            color: #ffd700;
+        }
+        @keyframes answerAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @media (max-width: 768px) {
+            .knowledge-answer {
+                padding: 13px;
+            }
+            .knowledge-answer p {
+                font-size: 11px;
+                line-height: 1.6;
+            }
+            .answer-header h3 {
+                font-size: 12px;
+            }
+            .answer-header span {
+                font-size: 8px;
+            }
+            .icon-box {
+                width: 32px;
+                height: 32px;
+                min-width: 32px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body class="w-screen h-screen relative select-none overflow-hidden bg-[#1c1510]">
+    <!-- =====================================================
+         KHUNG VIỀN TRANG TRÍ
+    ===================================================== -->
+    <div class="absolute inset-2 border-2 border-[#8c6d48]/40 pointer-events-none z-40 rounded-xl hidden md:block">
+    </div>
+    <!-- =====================================================
+         HEADER
+    ===================================================== -->
+    <header class="absolute top-0 left-0 w-full z-50 flex justify-between items-center px-4 md:px-12 py-3 bg-[#140e0a]/95 backdrop-blur-md border-b border-[#8c6d48]/30">
+        <div class="flex items-center space-x-2">
+            <div class="bg-[#8c6d48] p-1.5 rounded-lg text-[#f3ebd8] shadow-lg">
+                <i class="fa-solid fa-scroll text-sm md:text-base"></i>
+            </div>
+            <div>
+                <h1 class="text-[11px] md:text-sm font-bold tracking-wider text-[#ffd700] uppercase title-font">
+                    Đại cương Khoa học Tự nhiên - Nhóm 3
+                </h1>
+                <p class="text-[9px] md:text-xs text-[#b8a38c]">
+                    ĐH Sư phạm Hà Nội 2
+                </p>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3 text-xs md:text-sm font-medium">
+            <div class="bg-[#241b14] px-3 py-1 rounded-full border border-[#8c6d48]/50 text-[#ffd700]">
+                <span>Slide:</span>
+                <span id="slide-indicator" class="font-bold">
+                    1 / 8
+                </span>
+            </div>
+        </div>
+    </header>
+    <!-- =====================================================
+         NÚT ĐIỀU HƯỚNG
+    ===================================================== -->
+    <div class="absolute bottom-2 left-1/2 -translate-x-1/2 z-50 flex items-center space-x-2 bg-[#140e0a]/95 px-4 py-1.5 rounded-full border border-[#8c6d48]/50 text-[11px] md:text-xs text-[#ffd700] shadow-2xl backdrop-blur-md">
+        <button onclick="prevSlide()"
+                class="hover:text-white px-2 py-0.5 transition">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+        <span class="text-[#b8a38c] text-[10px] md:text-xs">
+            Dùng phím mũi tên hoặc vuốt màn hình
+        </span>
+        <button onclick="nextSlide()"
+                class="hover:text-white px-2 py-0.5 transition">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    </div>
+    <!-- =====================================================
+         KHUNG CHỨA TOÀN BỘ SLIDE
+    ===================================================== -->
+    <div id="presentation-slider"
+         class="slide-container w-full h-full absolute top-0 left-0 flex flex-col">
+        <!-- =====================================================
+             SLIDE 1
+        ===================================================== -->
+        <div class="slide w-screen h-screen shrink-0 relative pt-20 pb-14 px-4 md:px-20 flex items-center justify-center bg-gradient-to-b from-[#1c1510] via-[#2a1d13] to-[#140e0a]">
+            <div class="max-w-3xl text-center bg-[#241b14]/90 p-5 md:p-8 rounded-2xl border-2 border-[#ffd700]/60 shadow-2xl relative">
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#8c6d48] text-[#f3ebd8] text-[10px] tracking-widest uppercase px-4 py-0.5 rounded-full title-font font-bold">
+                    Nhóm 3 • Bài tập lớn Thuyết trình
+                </div>
+                <h2 class="text-xl md:text-2xl font-extrabold mt-2 text-[#ffd700] leading-snug title-font">
+                    Phân tích Giai đoạn 4: Thế kỷ XIX
+                    <br>
+                    <span class="text-sm md:text-lg text-[#f3ebd8] font-normal font-sans">
+                        (Chuyên môn hóa và tổng hợp)
+                    </span>
+                </h2>
+                <p class="mt-1 text-[#ffd700] text-xs font-semibold">
+                    Thực hiện: Nhóm 3
+                </p>
+                <p class="text-[#b8a38c] text-xs italic">
+                    Giải đáp 5 câu hỏi định hướng trọng tâm phát triển lịch sử KHTN
+                </p>
+                <div class="mt-2">
+                    <img src="https://i.ibb.co/JWk6fj3s/IMG-2291.jpg"
+                         alt="Ảnh Louis Pasteur"
+                         class="rounded-lg max-h-24 md:max-h-32 mx-auto border border-[#8c6d48]/40 shadow-md">
+                    <p class="text-[10px] md:text-xs text-[#ffd700] italic mt-1.5 font-medium">
+                        Louis Pasteur là người tiên phong trong lĩnh vực hóa học,
+                        vi sinh, miễn dịch học và vắc-xin học
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- =====================================================
+             SLIDE 2 - CÂU HỎI 1
+        ===================================================== -->
+        <div class="slide w-screen h-screen shrink-0 relative pt-20 pb-14 px-4 md:px-16 flex items-center justify-center bg-[#1c1510]">
+            <div class="max-w-4xl w-full">
+                <span class="text-[11px] uppercase tracking-widest text-[#ffd700] font-bold title-font">
+                    Câu hỏi 1 / 5
+                </span>
+                <h2 class="text-lg md:text-2xl font-extrabold mt-1 text-[#ffd700] title-font">
+                    1. Con người tích lũy tri thức dựa trên hình thức nào?
+                </h2>
+                <!-- NỘI DUNG CHÍNH -->
+                <div class="mt-4 bg-[#241b14] p-4 md:p-6 rounded-2xl border border-[#8c6d48]/40 shadow-xl">
+                    <p class="text-xs md:text-sm text-[#f3ebd8] leading-relaxed">
+                        Tri thức ở thế kỷ XIX được tích lũy chủ yếu thông qua
+                        <strong class="text-[#ffd700]">
+                            phương pháp quan sát thực nghiệm trong phòng thí nghiệm,
+                            các cuộc thám hiểm và khảo sát điền dã thực địa quy mô lớn
+                        </strong>
+                        (về địa chất, sinh học), kết hợp với việc
+                        <strong class="text-[#ffd700]">
+                            xây dựng hệ thống phân loại học và đo đạc chính xác.
+                        </strong>
+                    </p>
+                    <!-- =================================================
+                         3 NÚT
+                    ================================================= -->
+                    <div class="mt-5 grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <!-- KHẢO SÁT ĐIỀN DÃ -->
+                        <button onclick="toggleAnswer('answer-fieldwork', this)"
+                                class="knowledge-btn group bg-[#2d2118] hover:bg-[#3a2a1d] p-4 rounded-xl border border-[#8c6d48]/50 text-left">
+                            <div class="flex items-center gap-3">
+                                <div class="icon-box">
+                                    <i class="fa-solid fa-compass"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xs md:text-sm font-bold text-[#ffd700]">
+                                        Khảo sát điền dã
+                                    </h3>
+                                    <p class="text-[9px] md:text-[10px] text-[#b8a38c]">
+                                        & Thám hiểm
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-[9px] text-[#8c6d48]">
+                                <i class="fa-solid fa-chevron-down"></i>
+                                Nhấn để xem
+                            </div>
+                        </button>
+                        <!-- QUAN SÁT THỰC NGHIỆM -->
+                        <button onclick="toggleAnswer('answer-experiment', this)"
+                                class="knowledge-btn group bg-[#2d2118] hover:bg-[#3a2a1d] p-4 rounded-xl border border-[#8c6d48]/50 text-left">
+                            <div class="flex items-center gap-3">
+                                <div class="icon-box">
+                                    <i class="fa-solid fa-flask"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xs md:text-sm font-bold text-[#ffd700]">
+                                        Quan sát thực nghiệm
+                                    </h3>
+                                    <p class="text-[9px] md:text-[10px] text-[#b8a38c]">
+                                        & Đo đạc
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-[9px] text-[#8c6d48]">
+                                <i class="fa-solid fa-chevron-down"></i>
+                                Nhấn để xem
+                            </div>
+                        </button>
+                        <!-- HỆ THỐNG PHÂN LOẠI -->
+                        <button onclick="toggleAnswer('answer-classification', this)"
+                                class="knowledge-btn group bg-[#2d2118] hover:bg-[#3a2a1d] p-4 rounded-xl border border-[#8c6d48]/50 text-left">
+                            <div class="flex items-center gap-3">
+                                <div class="icon-box">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-xs md:text-sm font-bold text-[#ffd700]">
+                                        Hệ thống phân loại
+                                    </h3>
+                                    <p class="text-[9px] md:text-[10px] text-[#b8a38c]">
+                                        Hệ thống hóa tri thức
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="mt-2 text-[9px] text-[#8c6d48]">
+                                <i class="fa-solid fa-chevron-down"></i>
+                                Nhấn để xem
+                            </div>
+                        </button>
+                    </div>
+                    <!-- =================================================
+                         NỘI DUNG HIỂN THỊ
+                    ================================================= -->
+                    <div id="knowledge-details" class="mt-4">
+                        <!-- ---------------------------------------------
+                             KHẢO SÁT ĐIỀN DÃ
+                        ---------------------------------------------- -->
+                        <div id="answer-fieldwork"
+                             class="knowledge-answer">
+                            <div class="answer-header">
+                                <div class="answer-icon">
+                                    <i class="fa-solid fa-compass"></i>
+                                </div>
+                                <div>
+                                    <h3>
+                                        Khảo sát điền dã và thám hiểm
+                                    </h3>
+                                    <span>
+                                        Thu thập dữ liệu trực tiếp từ tự nhiên
+                                    </span>
+                                </div>
+                            </div>
+                            <p>
+                                Thế kỷ XIX là thời kỳ hoàng kim của các cuộc
+                                thám hiểm vòng quanh thế giới (như chuyến hải trình
+                                của tàu <strong>HMS Beagle</strong> mà
+                                <strong>Charles Darwin</strong> từng tham gia)
+                                để thu thập mẫu vật sinh học và khảo sát các tầng địa chất.
+                            </p>
+                        </div>
+                        <!-- ---------------------------------------------
+                             QUAN SÁT THỰC NGHIỆM
+                        ---------------------------------------------- -->
+                        <div id="answer-experiment"
+                             class="knowledge-answer">
+                            <div class="answer-header">
+                                <div class="answer-icon">
+                                    <i class="fa-solid fa-flask"></i>
+                                </div>
+                                <div>
+                                    <h3>
+                                        Quan sát thực nghiệm và đo đạc
+                                    </h3>
+                                    <span>
+                                        Kiểm chứng bằng thí nghiệm và số liệu
+                                    </span>
+                                </div>
+                            </div>
+                            <p>
+                                Khoa học thời kỳ này đã xây dựng hệ thống phòng
+                                thí nghiệm với các thiết bị đo đạc vật lý, hóa học
+                                ngày càng tinh vi thay vì chỉ dựa vào suy luận
+                                triết học thuần túy.
+                            </p>
+                        </div>
+                        <!-- ---------------------------------------------
+                             HỆ THỐNG PHÂN LOẠI
+                        ---------------------------------------------- -->
+                        <div id="answer-classification"
+                             class="knowledge-answer">
+                            <div class="answer-header">
+                                <div class="answer-icon">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                </div>
+                                <div>
+                                    <h3>
+                                        Hệ thống phân loại
+                                    </h3>
+                                    <span>
+                                        Hệ thống hóa và sắp xếp tri thức
+                                    </span>
+                                </div>
+                            </div>
+                            <p>
+                                Đây là giai đoạn bùng nổ việc hệ thống hóa,
+                                lập danh mục cho các loài sinh vật, khoáng sản
+                                và đặc biệt là việc xây dựng
+                                <strong>bảng tuần hoàn các nguyên tố hóa học</strong>.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- =====================================================
+             SLIDE 3 - CÂU HỎI 2 PHẦN 1
+        ===================================================== -->
+        <div class="slide w-screen h-screen shrink-0 relative pt-20 pb-14 px-4 md:px-16 flex items-center justify-center bg-[#1c1510]">
+            <div class="max-w-3xl w-full">
+                <span class="text-[11px] uppercase tracking-widest text-[#ffd700] font-bold title-font">
+                    Câu hỏi 2 / 5 (Phần 1)
+                </span>
+                <h2 class="text-lg md:text-2xl font-extrabold mt-1 text-[#ffd700] title-font">
+                    2. Nêu một số phát minh quan trọng
+                    (Năng lượng & Sinh học)
+                </h2>
+                <div class="mt-4 bg-[#241b14] p-4 md:p-6 rounded-2xl border border-[#8c6d48]/40 shadow-xl max-h-[65vh] overflow-y-auto space-y-4">
+                    <div>
+                        <strong class="text-[#ffd700] text-xs md:text-sm block mb-1">
+                            Định luật bảo toàn và chuyển hóa năng lượng:
+                        </strong>
+                        <p class="text-xs md:text-sm text-[#f3ebd8] leading-relaxed">
+                            Chứng minh sự chuyển hóa lẫn nhau giữa các hình thức
+                            vận động vật chất trong tự nhiên.
+                        </p>
+                    </div>
+                    <div class="border-t border-[#8c6d48]/30 pt-3">
+                        <strong class="text-[#ffd700] text-xs md:text-sm block mb-1">
+                            Thuyết tế bào:
+                        </strong>
+                        <p class="text-xs md:text-sm text-[#f3ebd8] leading-relaxed mb-2">
+                            Khẳng định sự đồng nhất về cấu trúc và nguồn gốc
+                            của mọi cơ thể sống từ thực vật đến động vật.
+                        </p>
+                        <div class="text-center">
+                            <img src="https://i.ibb.co/8gdnF7x8/IMG-2293.jpg"
+                                 alt="Ảnh cấu trúc tế bào"
+                                 class="rounded-lg max-h-24 md:max-h-32 mx-auto border border-[#8c6d48]/40 shadow-md">
+                            <p class="text-[10px] md:text-xs text-[#ffd700] italic mt-1 font-medium">
+                                Các tế bào bạch cầu với nhân và hạt.
+                                Màng tế bào trong suốt
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- =====================================================
+             SLIDE 4 - CÂU HỎI 2 PHẦN 2
+        ===================================================== -->
+        <div class="slide w-screen h-screen shrink-0 relative pt-20 pb-14 px-4 md:px-16 flex items-center justify-center bg-[#1c1510]">
+            <div class="max-w-3xl w-full">
+                <span class="text-[11px] uppercase tracking-widest text-[#ffd700] font-bold title-font">
+                    Câu hỏi 2 / 5 (Phần 2)
+                </span>
+                <h2 class="text-lg md:text-2xl font-extrabold mt-1 text-[#ffd700] title-font">
+                    2. Nêu một số phát minh quan trọng
+                    (Tiến hóa & Vật lý - Hóa học)
+                </h2>
+                <div class="mt-4 bg-[#241b14] p-4 md:p-6 rounded-2xl border border-[#8c6d48]/40 shadow-xl max-h-[65vh] overflow-y-auto space-y-3">
+                    <div>
+                        <strong class="text-[#ffd700] text-xs md:text-sm block">
+                            Thuyết tiến hóa (Darwin):
+                        </strong>
+                        <p class="text-xs md:text-sm text-[#f3ebd8]">
+                            Giải thích nguồn gốc sinh giới thông qua cơ chế
+                            chọn lọc tự nhiên.
+                        </p>
+                    </div>
+                    <div class="border-t border-[#8c6d48]/30 pt-2">
+                        <strong class="text-[#ffd700] text-xs md:text-sm block">
+                            Bảng tuần hoàn các nguyên tố hóa học (Mendeleev):
+                        </strong>
+                        <p class="text-xs md:text-sm text-[#f3ebd8] mb-2">
+                            Hệ thống hóa toàn bộ các nguyên tố hóa học dựa trên
+                            trọng lượng nguyên tử.
+                        </p>
+                        <div class="text-center">
+                            <img src="https://i.ibb.co/CKrcBKnB/IMG-2294.jpg"
+                                 alt="Bảng tuần hoàn các nguyên tố hóa học"
+                                 class="rounded-lg max-h-20 md:max-h-28 mx-auto border border-[#8c6d48]/40 shadow-md">
+                            <p class="text-[10px] md:text-xs text-[#ffd700] italic mt-1 font-medium">
+                                Bảng tuần hoàn các nguyên tố hóa học
+                                của Dmitri Mendeleev
+                            </p>
+                        </div>
+                    </div>
+                    <div class="border-t border-[#8c6d48]/30 pt-2">
+                        <strong class="text-[#ffd700] text-xs md:text-sm block">
+                            Điện từ học (Maxwell):
+                        </strong>
+                        <p class="text-xs md:text-sm text-[#f3ebd8]">
+                            Thống nhất điện học và từ học bằng hệ phương trình
+                            điện từ trường.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- =====================================================
+             SLIDE 5 - CÂU HỎI 3
+        ===================================================== -->
+        <div class="slide w-screen h-screen shrink-0 relative pt-20 pb-14 px-4 md:px-16 flex items-center justify-center bg-[#1c1510]">
+            <div class="max-w-4xl w-full">
+                <span class="text-[11px] uppercase tracking-widest text-[#ffd700] font-bold title-font">
+                    Câu hỏi 3 / 5
+                </span>
+                <h2 class="text-lg md:text-2xl font-extrabold mt-1 text-[#ffd700] title-font">
+                    3. Nhà khoa học tiêu biểu và thành tựu liên quan
+                </h2>
+                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3 max-h-[65vh] overflow-y-auto pr-1">
+                    <!-- DARWIN -->
+                    <div class="bg-[#241b14] p-3 rounded-xl border border-[#8c6d48]/40 flex space-x-3 items-center">
+                        <div class="shrink-0 text-center">
+                            <img src="https://i.ibb.co/Zz5sKSp9/IMG-2301.jpg"
+                                 alt="Charles Darwin"
+                                 class="w-14 h-14 rounded-lg avatar-img border border-[#ffd700]/50">
+                            <span class="text-[9px] text-[#ffd700] block mt-0.5">
+                                Darwin
+                            </span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-[#ffd700] title-font text-xs md:text-sm">
+                                Charles Darwin (1809–1882)
+                            </h3>
+                            <p class="text-[11px] text-[#b8a38c] mt-0.5">
+                                Đề xuất <strong>Thuyết tiến hóa</strong>,
+                                giải thích sự đa dạng và tiến hóa của sinh giới
+                                thông qua chọn lọc tự nhiên.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- MENDELEEV -->
+                    <div class="bg-[#241b14] p-3 rounded-xl border border-[#8c6d48]/40 flex space-x-3 items-center">
+                        <div class="shrink-0 text-center">
+                            <img src="https://i.ibb.co/sdZML82S/IMG-2297.jpg"
+                                 alt="Dmitri Mendeleev"
+                                 class="w-14 h-14 rounded-lg avatar-img border border-[#ffd700]/50">
+                            <span class="text-[9px] text-[#ffd700] block mt-0.5">
+                                Mendeleev
+                            </span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-[#ffd700] title-font text-xs md:text-sm">
+                                Dmitri Mendeleev (1834–1907)
+                            </h3>
+                            <p class="text-[11px] text-[#b8a38c] mt-0.5">
+                                Phát triển <strong>Bảng tuần hoàn các nguyên tố hóa học</strong>,
+                                góp phần hệ thống hóa tri thức hóa học.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- MAXWELL -->
+                    <div class="bg-[#241b14] p-3 rounded-xl border border-[#8c6d48]/40 flex space-x-3 items-center">
+                        <div class="shrink-0 text-center">
+                            <img src="https://i.ibb.co/tphwx6nP/IMG-2303.jpg"
+                                 alt="James C. Maxwell"
+                                 class="w-14 h-14 rounded-lg avatar-img border border-[#ffd700]/50">
+                            <span class="text-[9px] text-[#ffd700] block mt-0.5">
+                                Maxwell
+                            </span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-[#ffd700] title-font text-xs md:text-sm">
+                                James C. Maxwell (1831–1879)
+                            </h3>
+                            <p class="text-[11px] text-[#b8a38c] mt-0.5">
+                                Xây dựng hệ <strong>phương trình điện từ trường</strong>
+                                thống nhất điện học và từ học.
+                            </p>
+                        </div>
+                    </div>
+                    <!-- PASTEUR -->
+                    <div class="bg-[#241b14] p-3 rounded-xl border border-[#8c6d48]/40 flex space-x-3 items-center">
+                        <div class="shrink-0 text-center">
+                            <img src="https://i.ibb.co/938QkVhF/IMG-2299.jpg"
+                                 alt="Louis Pasteur"
+                                 class="w-14 h-14 rounded-lg avatar-img border border-[#ffd700]/50">
+                            <span class="text-[9px] text-[#ffd700] block mt-0.5">
+                                Pasteur
+                            </span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-[#ffd700] title-font text-xs md:text-sm">
+                                Louis Pasteur (1822–1895)
+                            </h3>
+                            <p class="text-[11px] text-[#b8a38c] mt-0.5">
+                                Đặt nền móng <strong>vi sinh học hiện đại</strong>
+                                và phát triển vắc-xin phòng bệnh dại.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- =====================================================
+             SLIDE 6 - CÂU HỎI 4
+        ===================================================== -->
+        <div class="slide w-screen h-screen shrink-0 relative pt-20 pb-14 px-4 md:px-16 flex items-center justify-center bg-[#1c1510]">
+            <div class="max-w-3xl w-full">
+                <span class="text-[11px] uppercase tracking-widest text-[#ffd700] font-bold title-font">
+                    Câu hỏi 4 / 5
+                </span>
+                <h2 class="text-lg md:text-2xl font-extrabold mt-1 text-[#ffd700] title-font">
+                    4. Đặc điểm bước ngoặt của khoa học thời kỳ này là gì?
+                </h2>
+                <div class="mt-4 bg-[#241b14] p-4 md:p-6 rounded-2xl border border-[#8c6d48]/40 shadow-xl max-h-[65vh] overflow-y-auto">
+                    <p class="text-xs md:text-sm text-[#f3ebd8] leading-relaxed">
+                        Chuyển dịch mạnh mẽ từ nghiên cứu bách khoa đơn lẻ sang
+                        <strong class="text-[#ffd700]">
+                            chuyên môn hóa sâu sắc kết hợp tổng hợp lý luận
+                        </strong>.
+                        Thông qua 3 phát minh vĩ đại
+                        (Bảo toàn năng lượng, Thuyết tế bào, Thuyết tiến hóa),
+                        khoa học thế kỷ XIX đập tan quan điểm siêu hình,
+                        khẳng định tính biện chứng khách quan của tự nhiên.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <!-- =====================================================
+             SLIDE 7 - CÂU HỎI 5
+        ===================================================== -->
+        <div class="slide w-screen h-screen shrink-0 relative pt-20 pb-14 px-4 md:px-16 flex items-center justify-center bg-[#1c1510]">
+            <div class="max-w-3xl w-full">
+                <span class="text-[11px] uppercase tracking-widest text-[#ffd700] font-bold title-font">
+                    Câu hỏi 5 / 5
+                </span>
+                <h2 class="text-lg md:text-2xl font-extrabold mt-1 text-[#ffd700] title-font">
+                    5. Giai đoạn có tốc độ phát triển và tác động mạnh mẽ nhất?
+                </h2>
+                <div class="mt-4 bg-[#241b14] p-4 md:p-6 rounded-2xl border border-[#8c6d48]/40 shadow-xl max-h-[65vh] overflow-y-auto">
+                    <p class="text-xs md:text-sm text-[#f3ebd8] leading-relaxed mb-2">
+                        <strong class="text-[#ffd700]">
+                            Giai đoạn 4 (Thế kỷ XIX)
+                        </strong>
+                        chính là bản lề quyết định vì đã chuyển hóa khoa học thành
+                        <strong class="text-[#ffd700]">
+                            lực lượng sản xuất trực tiếp
+                        </strong>
+                        (Cuộc cách mạng công nghiệp lần thứ hai:
+                        điện khí hóa, động cơ đốt trong, công nghiệp hóa chất).
+                    </p>
+                    <div class="mt-3 text-center">
+                        <img src="https://i.ibb.co/bMhnt6Dt/IMG-2305.webp"
+                             alt="Ảnh minh hoạ cách mạng công nghiệp thế kỉ 19"
+                             class="rounded-lg max-h-24 md:max-h-32 mx-auto border border-[#8c6d48]/40 shadow-md">
+                        <p class="text-[10px] text-[#ffd700] italic mt-1 font-medium">
+                            Minh họa Cuộc cách mạng công nghiệp thế kỷ XIX
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- =====================================================
+             SLIDE 8 - CẢM ƠN
+        ===================================================== -->
+        <div class="slide w-screen h-screen shrink-0 relative pt-20 pb-14 px-4 md:px-20 flex items-center justify-center bg-gradient-to-b from-[#1c1510] via-[#2a1d13] to-[#140e0a]">
+            <div class="max-w-xl text-center bg-[#241b14]/90 p-8 md:p-12 rounded-2xl border-2 border-[#ffd700]/60 shadow-2xl">
+                <div class="inline-block p-3 bg-[#8c6d48]/30 rounded-full text-[#ffd700] mb-3">
+                    <i class="fa-solid fa-hands-clapping text-2xl md:text-3xl"></i>
+                </div>
+                <h2 class="text-2xl md:text-4xl font-extrabold text-[#ffd700] title-font">
+                    Xin chân thành cảm ơn!
+                </h2>
+                <p class="mt-3 text-xs md:text-sm text-[#b8a38c]">
+                    Cảm ơn Cô và các bạn đã lắng nghe phần thuyết trình
+                    của <strong>Nhóm 3</strong>.
+                </p>
+                <div class="mt-4">
+                    <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=500&q=80"
+                         alt="Thảo luận thuyết trình"
+                         class="rounded-lg max-h-24 mx-auto border border-[#8c6d48]/40 opacity-90 shadow-md">
+                </div>
+                <div class="mt-4 text-[11px] text-[#ffd700] tracking-wider uppercase font-semibold">
+                    Q&A - Hỏi đáp & Thảo luận
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- =====================================================
+         JAVASCRIPT
+    ===================================================== -->
+    <script>
+        /* =====================================================
+           ĐIỀU KHIỂN SLIDE
+        ===================================================== */
+        let currentSlide = 0;
+        const totalSlides = 8;
+        const presentationSlider =
+            document.getElementById('presentation-slider');
+        const slideIndicator =
+            document.getElementById('slide-indicator');
+        function updateSlide() {
+            presentationSlider.style.transform =
+                `translateY(-${currentSlide * 100}vh)`;
+            slideIndicator.innerText =
+                `${currentSlide + 1} / ${totalSlides}`;
+        }
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                updateSlide();
+            }
+        }
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                updateSlide();
+            }
+        }
+        /* =====================================================
+           PHÍM BÀN PHÍM
+        ===================================================== */
+        window.addEventListener('keydown', (e) => {
+            if (
+                e.key === 'ArrowDown' ||
+                e.key === 'ArrowRight' ||
+                e.key === ' ' ||
+                e.key === 'PageDown'
+            ) {
+                e.preventDefault();
+                nextSlide();
+            }
+            else if (
+                e.key === 'ArrowUp' ||
+                e.key === 'ArrowLeft' ||
+                e.key === 'PageUp'
+            ) {
+                e.preventDefault();
+                prevSlide();
+            }
+        });
+        /* =====================================================
+           VUỐT TRÊN ĐIỆN THOẠI
+        ===================================================== */
+        let touchStartY = 0;
+        let touchStartX = 0;
+        window.addEventListener(
+            'touchstart',
+            e => {
+                touchStartY =
+                    e.changedTouches[0].screenY;
+                touchStartX =
+                    e.changedTouches[0].screenX;
+            },
+            {
+                passive: true
+            }
+        );
+        window.addEventListener(
+            'touchend',
+            e => {
+                let touchEndY =
+                    e.changedTouches[0].screenY;
+                let touchEndX =
+                    e.changedTouches[0].screenX;
+                let diffY =
+                    touchStartY - touchEndY;
+                let diffX =
+                    touchStartX - touchEndX;
+                if (Math.abs(diffY) > Math.abs(diffX)) {
+                    if (diffY > 40) {
+                        nextSlide();
+                    }
+                    else if (diffY < -40) {
+                        prevSlide();
+                    }
+                }
+                else {
+                    if (diffX > 40) {
+                        nextSlide();
+                    }
+                    else if (diffX < -40) {
+                        prevSlide();
+                    }
+                }
+            },
+            {
+                passive: true
+            }
+        );
+        /* =====================================================
+           3 PHẦN CỦA CÂU HỎI 1
+        ===================================================== */
+        function toggleAnswer(answerId, button) {
+            const selectedAnswer =
+                document.getElementById(answerId);
+            const allAnswers =
+                document.querySelectorAll('.knowledge-answer');
+            const allButtons =
+                document.querySelectorAll('.knowledge-btn');
+            /*
+             Nếu phần đang mở
+             thì đóng lại
+            */
+            if (
+                selectedAnswer.classList.contains('show')
+            ) {
+                selectedAnswer.classList.remove('show');
+                button.classList.remove('active');
+                return;
+            }
+            /*
+             Đóng tất cả
+            */
+            allAnswers.forEach(answer => {
+                answer.classList.remove('show');
+            });
+            allButtons.forEach(btn => {
+                btn.classList.remove('active');
+            });
+            /*
+             Mở phần được chọn
+            */
+            selectedAnswer.classList.add('show');
+            button.classList.add('active');
+        }
+        /* =====================================================
+           KHỞI ĐỘNG
+        ===================================================== */
+        updateSlide();
+    </script>
+</body>
+</html>
