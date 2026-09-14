@@ -1,0 +1,1332 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Truy tìm KitKat</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+:root{
+    --forest-1:#083f32;
+    --forest-2:#0f5944;
+    --forest-3:#1d7659;
+
+    --cream-1:#fffaf0;
+    --cream-2:#f4eddd;
+
+    --text:#153d32;
+    --soft-green:#e5eee7;
+    --soft-border:#9eb8a8;
+
+    --red:#d71920;
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:"Segoe UI",Arial,sans-serif;
+    background:
+        radial-gradient(circle at top,#246d52 0%,#0d4c3b 42%,#062f26 100%);
+    min-height:100vh;
+    color:var(--text);
+    overflow-x:hidden;
+}
+
+.game-wrapper{
+    width:100%;
+    max-width:900px;
+    margin:auto;
+    position:relative;
+}
+
+/* =========================
+   BANNER
+========================= */
+
+.hero-banner{
+    width:100%;
+    position:relative;
+    overflow:hidden;
+}
+
+.hero-banner img{
+    width:100%;
+    display:block;
+    height:auto;
+}
+
+/* =========================
+   KHUNG CHÍNH
+========================= */
+
+.game-container{
+    position:relative;
+    width:calc(100% - 38px);
+    margin:-3px auto 30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--cream-1),
+            var(--cream-2)
+        );
+
+    border-radius:32px;
+
+    padding:
+        35px 55px 175px;
+
+    min-height:780px;
+
+    box-shadow:
+        0 20px 45px rgba(0,0,0,.28);
+
+    overflow:visible;
+}
+
+.game-container::before{
+    content:"";
+    position:absolute;
+    inset:25px;
+    border:2px dashed rgba(61,102,82,.18);
+    border-radius:24px;
+    pointer-events:none;
+}
+
+/* =========================
+   HEADER CÂU HỎI
+========================= */
+
+.question-head{
+    position:relative;
+    z-index:5;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    gap:15px;
+    margin-bottom:24px;
+}
+
+.question-badge{
+    display:flex;
+    align-items:center;
+    gap:10px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #104c3b,
+            #1f7155
+        );
+
+    color:white;
+
+    border-radius:28px;
+
+    padding:
+        8px
+        20px
+        8px
+        10px;
+
+    font-weight:800;
+    font-size:20px;
+
+    box-shadow:
+        0 5px 12px rgba(0,0,0,.13);
+}
+
+.question-badge img{
+    width:66px;
+    height:66px;
+    object-fit:contain;
+}
+
+.kitkat-score{
+    display:flex;
+    align-items:center;
+    gap:7px;
+
+    font-weight:800;
+    color:#0d503d;
+
+    background:#fff8e9;
+    border:2px solid rgba(114,100,61,.18);
+
+    border-radius:22px;
+    padding:8px 13px;
+
+    white-space:nowrap;
+}
+
+.kitkat-score span{
+    color:#c31c22;
+    font-size:20px;
+}
+
+/* =========================
+   CÂU HỎI
+========================= */
+
+#question-text{
+    position:relative;
+    z-index:5;
+
+    max-width:720px;
+    margin:10px auto 35px;
+
+    text-align:center;
+
+    font-size:34px;
+    line-height:1.35;
+
+    color:#103c31;
+    font-weight:850;
+}
+
+/* =========================
+   ĐÁP ÁN
+========================= */
+
+.options-list{
+    position:relative;
+    z-index:5;
+
+    max-width:680px;
+    margin:auto;
+
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+}
+
+.option-btn{
+    width:100%;
+    min-height:82px;
+
+    border-radius:25px;
+
+    border:
+        2px solid
+        rgba(72,115,91,.38);
+
+    background:
+        linear-gradient(
+            100deg,
+            #f9f7ef,
+            #e6eee8
+        );
+
+    color:#173f34;
+
+    font-size:21px;
+    line-height:1.35;
+
+    text-align:left;
+
+    padding:
+        18px
+        28px;
+
+    cursor:pointer;
+
+    transition:
+        transform .2s,
+        box-shadow .2s,
+        border-color .2s,
+        background .2s;
+
+    position:relative;
+    overflow:visible;
+}
+
+.option-btn:hover:not(:disabled){
+    transform:translateY(-2px);
+    border-color:#2a795b;
+
+    box-shadow:
+        0 8px 18px
+        rgba(40,100,74,.14);
+}
+
+/* =========================
+   ĐÁP ÁN ĐÚNG
+========================= */
+
+.option-btn.correct{
+    background:
+        linear-gradient(
+            90deg,
+            #0d5a43,
+            #1d7659
+        ) !important;
+
+    color:white !important;
+
+    border:
+        3px solid
+        #0b4c3a !important;
+
+    padding:
+        18px
+        130px
+        18px
+        95px;
+
+    box-shadow:
+        inset 0 0 0 2px rgba(255,255,255,.55),
+        0 8px 18px rgba(18,82,61,.18);
+}
+
+/* PNG 2A */
+.correct-check{
+    position:absolute;
+
+    left:18px;
+    top:50%;
+
+    transform:translateY(-50%);
+
+    width:66px;
+    height:66px;
+
+    object-fit:contain;
+
+    z-index:10;
+
+    pointer-events:none;
+}
+
+/* PNG 2B */
+.correct-kitkat{
+    position:absolute;
+
+    right:8px;
+    top:50%;
+
+    transform:
+        translateY(-50%)
+        rotate(-3deg);
+
+    width:110px;
+    height:82px;
+
+    object-fit:contain;
+
+    z-index:10;
+
+    pointer-events:none;
+}
+
+/* =========================
+   ĐÁP ÁN SAI
+========================= */
+
+@keyframes shake{
+    0%{transform:translateX(0)}
+    25%{transform:translateX(-8px)}
+    50%{transform:translateX(8px)}
+    75%{transform:translateX(-5px)}
+    100%{transform:translateX(0)}
+}
+
+.option-btn.wrong{
+    animation:shake .4s ease;
+
+    background:#f9e5e2 !important;
+    border-color:#d1534d !important;
+}
+
+/* =========================
+   PHẦN THƯỞNG
+========================= */
+
+.reward-popup{
+    position:relative;
+    z-index:6;
+
+    display:none;
+
+    justify-content:center;
+
+    margin:
+        28px auto
+        18px;
+
+    width:min(520px,94%);
+}
+
+.reward-popup.show{
+    display:flex;
+
+    animation:
+        rewardPop
+        .35s ease;
+}
+
+.reward-popup img{
+    width:100%;
+    display:block;
+    object-fit:contain;
+}
+
+@keyframes rewardPop{
+    from{
+        opacity:0;
+        transform:
+            translateY(15px)
+            scale(.9);
+    }
+
+    to{
+        opacity:1;
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+/* =========================
+   TIẾN TRÌNH
+========================= */
+
+.progress{
+    position:relative;
+    z-index:6;
+
+    display:flex;
+
+    justify-content:center;
+    align-items:center;
+
+    gap:12px;
+
+    margin-top:25px;
+}
+
+.progress-step{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+    gap:5px;
+
+    font-size:13px;
+    color:#4d665a;
+
+    font-weight:700;
+}
+
+.progress-circle{
+    width:31px;
+    height:31px;
+
+    border-radius:50%;
+
+    background:#e2e6e1;
+
+    border:
+        2px solid
+        #abb8b0;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    color:#56675e;
+}
+
+.progress-step.done .progress-circle{
+    background:#2c8a64;
+    border-color:#207453;
+    color:white;
+}
+
+.progress-step.done .progress-circle::before{
+    content:"✓";
+    font-weight:900;
+}
+
+.progress-step.done .progress-number{
+    color:#247354;
+}
+
+.progress-step.current .progress-circle{
+    background:#fff;
+    border:
+        3px solid
+        #2d8060;
+}
+
+/* =========================
+   TRANG TRÍ GÓC
+========================= */
+
+.decoration-left{
+    position:absolute;
+
+    left:-65px;
+    bottom:-45px;
+
+    width:390px;
+
+    z-index:2;
+
+    pointer-events:none;
+}
+
+.decoration-right{
+    position:absolute;
+
+    right:-65px;
+    bottom:-45px;
+
+    width:390px;
+
+    z-index:2;
+
+    pointer-events:none;
+}
+
+.mascot{
+    position:absolute;
+
+    right:-18px;
+    bottom:2px;
+
+    width:205px;
+
+    z-index:4;
+
+    pointer-events:none;
+}
+
+/* =========================
+   KẾT QUẢ
+========================= */
+
+.result-screen{
+    display:none;
+
+    position:relative;
+    z-index:7;
+
+    text-align:center;
+
+    padding:
+        55px
+        15px;
+}
+
+.result-screen h2{
+    font-size:42px;
+    color:#0a4a39;
+
+    line-height:1.2;
+
+    margin-bottom:20px;
+}
+
+.result-screen p{
+    font-size:22px;
+    line-height:1.5;
+
+    color:#31594b;
+
+    margin-bottom:30px;
+}
+
+.final-reward{
+    max-width:460px;
+    width:92%;
+
+    margin:
+        0 auto
+        28px;
+}
+
+.final-reward img{
+    width:100%;
+}
+
+.restart-btn{
+    border:none;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0d6047,
+            #084837
+        );
+
+    color:white;
+
+    font-size:20px;
+    font-weight:800;
+
+    padding:
+        15px
+        38px;
+
+    border-radius:18px;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 8px 18px
+        rgba(0,0,0,.17);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:650px){
+
+    .game-container{
+        width:100%;
+
+        margin-top:0;
+
+        border-radius:
+            28px
+            28px
+            0
+            0;
+
+        padding:
+            25px
+            18px
+            180px;
+
+        min-height:780px;
+
+        overflow:visible;
+    }
+
+    .game-container::before{
+        inset:14px;
+    }
+
+    .question-head{
+        gap:8px;
+    }
+
+    .question-badge{
+        font-size:15px;
+
+        padding:
+            7px
+            14px
+            7px
+            8px;
+    }
+
+    .question-badge img{
+        width:50px;
+        height:50px;
+    }
+
+    .kitkat-score{
+        font-size:12px;
+        padding:7px 9px;
+    }
+
+    .kitkat-score span{
+        font-size:17px;
+    }
+
+    #question-text{
+        font-size:25px;
+
+        margin:
+            12px
+            8px
+            28px;
+    }
+
+    .option-btn{
+        min-height:75px;
+
+        padding:
+            15px
+            18px;
+
+        font-size:17px;
+
+        border-radius:20px;
+    }
+
+    .option-btn.correct{
+        padding:
+            15px
+            88px
+            15px
+            64px;
+    }
+
+    .correct-check{
+        width:48px;
+        height:48px;
+        left:8px;
+    }
+
+    .correct-kitkat{
+        width:76px;
+        height:60px;
+        right:4px;
+    }
+
+    .reward-popup{
+        width:92%;
+    }
+
+    .progress{
+        gap:8px;
+    }
+
+    .progress-circle{
+        width:27px;
+        height:27px;
+    }
+
+    .decoration-left{
+        width:300px;
+
+        left:-110px;
+        bottom:-42px;
+    }
+
+    .decoration-right{
+        width:300px;
+
+        right:-110px;
+        bottom:-42px;
+    }
+
+    .mascot{
+        width:170px;
+
+        right:-22px;
+        bottom:3px;
+    }
+
+    .result-screen h2{
+        font-size:34px;
+    }
+
+    .result-screen p{
+        font-size:19px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="game-wrapper">
+
+    <!-- BANNER -->
+    <div class="hero-banner">
+        <img
+            src="https://i.ibb.co/35BbmLqx/F855-EBE5-79-E7-4-BF3-9-B42-701-DBF111-AF8.jpg"
+            alt="Truy tìm KitKat">
+    </div>
+
+
+    <div class="game-container">
+
+        <!-- PNG 4 -->
+        <img
+            class="decoration-left"
+            src="https://i.ibb.co/v4JdkbDY/4.png"
+            alt="Trang trí trái">
+
+        <!-- PNG 5 -->
+        <img
+            class="decoration-right"
+            src="https://i.ibb.co/Vp22VRqY/5.png"
+            alt="Trang trí phải">
+
+        <!-- PNG 6 -->
+        <img
+            class="mascot"
+            src="https://i.ibb.co/n83B3nsn/6.png"
+            alt="Mascot">
+
+
+        <div id="quiz-box">
+
+            <div class="question-head">
+
+                <div class="question-badge">
+
+                    <!-- PNG 1 -->
+                    <img
+                        src="https://i.ibb.co/cStTPwSL/1.png"
+                        alt="Chocolate">
+
+                    <span id="question-counter">
+                        Câu hỏi 1 / 6
+                    </span>
+
+                </div>
+
+
+                <div class="kitkat-score">
+
+                    🍫
+
+                    <span id="kitkat-count">
+                        0
+                    </span>
+
+                    / 6
+
+                </div>
+
+            </div>
+
+
+            <h2 id="question-text">
+                Đang tải câu hỏi...
+            </h2>
+
+
+            <div
+                class="options-list"
+                id="options-list">
+            </div>
+
+
+            <!-- PNG 3 -->
+            <div
+                class="reward-popup"
+                id="reward-popup">
+
+                <img
+                    src="https://i.ibb.co/spmdhq6h/3.png"
+                    alt="Bạn nhận được 1 KitKat">
+
+            </div>
+
+
+            <div
+                class="progress"
+                id="progress">
+            </div>
+
+        </div>
+
+
+        <!-- RESULT -->
+
+        <div
+            class="result-screen"
+            id="result-screen">
+
+            <h2>
+                🎉 Hoàn thành rồi!
+            </h2>
+
+            <p>
+                Bạn đã thu thập được
+                <strong>6 / 6 KitKat!</strong>
+            </p>
+
+
+            <div class="final-reward">
+
+                <img
+                    src="https://i.ibb.co/spmdhq6h/3.png"
+                    alt="KitKat">
+
+            </div>
+
+
+            <button
+                class="restart-btn"
+                onclick="restartGame()">
+
+                Chơi lại
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const quizData = [
+
+{
+    question:
+    "Tri thức khoa học ở thế kỷ XIX được tích lũy chủ yếu thông qua phương pháp nào?",
+
+    options:[
+        "Suy luận triết học thuần túy",
+
+        "Quan sát thực nghiệm, thám hiểm, khảo sát thực địa và đo đạc chính xác",
+
+        "Sách vở và giáo lý tôn giáo",
+
+        "Kinh nghiệm truyền miệng"
+    ],
+
+    correct:1
+},
+
+{
+    question:
+    "Một đặc điểm nổi bật của khoa học thế kỷ XIX là:",
+
+    options:[
+        "Chỉ dựa vào tư duy triết học",
+
+        "Hạn chế sử dụng thực nghiệm",
+
+        "Xây dựng hệ thống phòng thí nghiệm và thiết bị đo đạc ngày càng tinh vi",
+
+        "Phụ thuộc chủ yếu vào giáo lý tôn giáo"
+    ],
+
+    correct:2
+},
+
+{
+    question:
+    "Ai là nhà khoa học tiêu biểu gắn với hiện tượng cảm ứng điện từ?",
+
+    options:[
+        "Charles Darwin",
+        "Michael Faraday",
+        "Dmitri Mendeleev",
+        "James Watt"
+    ],
+
+    correct:1
+},
+
+{
+    question:
+    "Năm 1869, Dmitri Mendeleev có đóng góp nổi bật nào?",
+
+    options:[
+        "Đề xuất học thuyết tiến hóa",
+
+        "Phát hiện hiện tượng cảm ứng điện từ",
+
+        "Xây dựng bảng hệ thống tuần hoàn các nguyên tố hóa học",
+
+        "Phát minh động cơ đốt trong"
+    ],
+
+    correct:2
+},
+
+{
+    question:
+    "Bước ngoặt của thế kỷ XIX thể hiện rõ nhất ở sự chuyển biến nào?",
+
+    options:[
+        "Từ thực nghiệm sang suy đoán",
+
+        "Từ khoa học chuyên môn hóa sang tri thức tổng hợp",
+
+        "Từ tri thức phân tán sang nghiên cứu chuyên môn hóa, thực nghiệm có hệ thống và đo đạc chính xác",
+
+        "Từ khoa học sang tôn giáo"
+    ],
+
+    correct:2
+},
+
+{
+    question:
+    "Vì sao thế kỷ XIX được xem là một bước ngoặt quan trọng của khoa học?",
+
+    options:[
+        "Vì khoa học quay lại dựa chủ yếu vào kinh nghiệm",
+
+        "Vì khoa học ngày càng gắn chặt với sản xuất và công nghệ",
+
+        "Vì khoa học không còn cần thực nghiệm",
+
+        "Vì các ngành khoa học bị hợp nhất thành một ngành duy nhất"
+    ],
+
+    correct:1
+}
+
+];
+
+
+let currentQuestionIndex = 0;
+let kitkatCollected = 0;
+let isTransitioning = false;
+
+
+const questionCounter =
+document.getElementById("question-counter");
+
+const questionText =
+document.getElementById("question-text");
+
+const optionsList =
+document.getElementById("options-list");
+
+const rewardPopup =
+document.getElementById("reward-popup");
+
+const progress =
+document.getElementById("progress");
+
+const kitkatCount =
+document.getElementById("kitkat-count");
+
+const quizBox =
+document.getElementById("quiz-box");
+
+const resultScreen =
+document.getElementById("result-screen");
+
+
+function loadQuestion(){
+
+    isTransitioning = false;
+
+    rewardPopup.classList.remove("show");
+
+    const q =
+    quizData[currentQuestionIndex];
+
+
+    questionCounter.innerText =
+    `Câu hỏi ${currentQuestionIndex + 1} / ${quizData.length}`;
+
+
+    questionText.innerText =
+    q.question;
+
+
+    optionsList.innerHTML = "";
+
+
+    q.options.forEach(
+        (option,index)=>{
+
+            const btn =
+            document.createElement("button");
+
+            btn.className =
+            "option-btn";
+
+            btn.innerText =
+            option;
+
+            btn.onclick =
+            () =>
+            selectOption(
+                index,
+                btn
+            );
+
+            optionsList.appendChild(btn);
+
+        }
+    );
+
+
+    renderProgress();
+
+}
+
+
+function selectOption(
+    selectedIndex,
+    selectedBtn
+){
+
+    if(isTransitioning) return;
+
+    const q =
+    quizData[currentQuestionIndex];
+
+
+    if(
+        selectedIndex ===
+        q.correct
+    ){
+
+        isTransitioning = true;
+
+        selectedBtn.classList.add(
+            "correct"
+        );
+
+
+        /* PNG 2A */
+        const check =
+        document.createElement("img");
+
+        check.src =
+        "https://i.ibb.co/1t435h2J/5-B1-DCE9-A-8-F91-4-DDD-B223-AB3827-F1-F74-D.png";
+
+        check.alt =
+        "Correct";
+
+        check.className =
+        "correct-check";
+
+
+        /* PNG 2B */
+        const kitkat =
+        document.createElement("img");
+
+        kitkat.src =
+        "https://i.ibb.co/qYWgXNjg/IMG-2587.png";
+
+        kitkat.alt =
+        "KitKat";
+
+        kitkat.className =
+        "correct-kitkat";
+
+
+        selectedBtn.appendChild(
+            check
+        );
+
+        selectedBtn.appendChild(
+            kitkat
+        );
+
+
+        const buttons =
+        document.querySelectorAll(
+            ".option-btn"
+        );
+
+        buttons.forEach(
+            btn =>
+            btn.disabled = true
+        );
+
+
+        kitkatCollected++;
+
+        kitkatCount.innerText =
+        kitkatCollected;
+
+
+        rewardPopup.classList.add(
+            "show"
+        );
+
+
+        confetti({
+
+            particleCount:80,
+
+            spread:70,
+
+            origin:{
+                y:.65
+            }
+
+        });
+
+
+        renderProgress();
+
+
+        setTimeout(
+            ()=>{
+
+                currentQuestionIndex++;
+
+
+                if(
+                    currentQuestionIndex
+                    <
+                    quizData.length
+                ){
+
+                    loadQuestion();
+
+                }
+
+                else{
+
+                    showResult();
+
+                }
+
+            },
+
+            1500
+        );
+
+    }
+
+    else{
+
+        selectedBtn.classList.add(
+            "wrong"
+        );
+
+
+        setTimeout(
+            ()=>{
+
+                selectedBtn.classList.remove(
+                    "wrong"
+                );
+
+            },
+
+            450
+        );
+
+    }
+
+}
+
+
+function renderProgress(){
+
+    progress.innerHTML = "";
+
+
+    for(
+        let i = 0;
+        i < quizData.length;
+        i++
+    ){
+
+        const step =
+        document.createElement("div");
+
+        step.className =
+        "progress-step";
+
+
+        if(
+            i < kitkatCollected
+        ){
+
+            step.classList.add(
+                "done"
+            );
+
+        }
+
+
+        if(
+            i === currentQuestionIndex
+        ){
+
+            step.classList.add(
+                "current"
+            );
+
+        }
+
+
+        const circle =
+        document.createElement("div");
+
+        circle.className =
+        "progress-circle";
+
+
+        const number =
+        document.createElement("span");
+
+        number.className =
+        "progress-number";
+
+        number.innerText =
+        i + 1;
+
+
+        step.appendChild(circle);
+
+        step.appendChild(number);
+
+        progress.appendChild(step);
+
+    }
+
+}
+
+
+function showResult(){
+
+    quizBox.style.display =
+    "none";
+
+    resultScreen.style.display =
+    "block";
+
+
+    confetti({
+
+        particleCount:180,
+
+        spread:110,
+
+        origin:{
+            y:.55
+        }
+
+    });
+
+}
+
+
+function restartGame(){
+
+    currentQuestionIndex = 0;
+
+    kitkatCollected = 0;
+
+    isTransitioning = false;
+
+
+    kitkatCount.innerText = 0;
+
+
+    quizBox.style.display =
+    "block";
+
+
+    resultScreen.style.display =
+    "none";
+
+
+    loadQuestion();
+
+}
+
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
