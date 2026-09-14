@@ -1,0 +1,1705 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Truy tìm KitKat</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+
+        /* =========================
+           MÀU ĐỒNG BỘ THEO BANNER
+        ========================== */
+
+        :root {
+            --forest-dark: #0b3b2e;
+            --forest: #104b39;
+            --forest-light: #1b664d;
+
+            --green: #2f8b62;
+            --green-light: #67c98d;
+
+            --cream: #f7f3e8;
+            --cream-dark: #e8dfc9;
+
+            --text-dark: #183c31;
+
+            --brown: #7a452d;
+
+            --kitkat-red: #d71920;
+
+            --border-soft: rgba(33, 84, 64, 0.25);
+        }
+
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        body {
+
+            font-family:
+                "Segoe UI",
+                Arial,
+                sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top,
+                    #1c674d,
+                    var(--forest-dark) 55%,
+                    #06251d
+                );
+
+            min-height: 100vh;
+
+            color: var(--text-dark);
+
+            padding-bottom: 40px;
+
+        }
+
+
+        /* =========================
+           KHUNG TOÀN BỘ GAME
+        ========================== */
+
+        .game-wrapper {
+
+            width: 100%;
+
+            max-width: 900px;
+
+            margin: auto;
+
+            position: relative;
+
+            padding-bottom: 30px;
+
+        }
+
+
+        /* =========================
+           BANNER
+        ========================== */
+
+        .hero-banner {
+
+            width: 100%;
+
+            overflow: hidden;
+
+            position: relative;
+
+        }
+
+
+        .hero-banner img {
+
+            width: 100%;
+
+            display: block;
+
+            object-fit: cover;
+
+        }
+
+
+        /* =========================
+           KHUNG GAME
+        ========================== */
+
+        .game-container {
+
+            width: calc(100% - 60px);
+
+            margin:
+
+                -5px auto 0 auto;
+
+            background:
+
+                linear-gradient(
+                    135deg,
+                    #fbf8ed,
+                    var(--cream)
+                );
+
+            border-radius:
+
+                34px 34px 28px 28px;
+
+            min-height: 700px;
+
+            position: relative;
+
+            overflow: hidden;
+
+            padding:
+
+                40px
+                70px
+                120px;
+
+            box-shadow:
+
+                0 20px 50px
+                rgba(0,0,0,0.35);
+
+        }
+
+
+        /* Đường viền nét đứt giống mẫu */
+
+        .game-container::before {
+
+            content: "";
+
+            position: absolute;
+
+            top: 30px;
+
+            left: 35px;
+
+            right: 35px;
+
+            bottom: 30px;
+
+            border:
+
+                2px dashed
+                rgba(104, 126, 100, 0.22);
+
+            border-radius: 25px;
+
+            pointer-events: none;
+
+        }
+
+
+        /* =========================
+           BADGE CÂU HỎI
+        ========================== */
+
+        .question-top {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            position: relative;
+
+            z-index: 3;
+
+            margin-bottom: 35px;
+
+        }
+
+
+        .question-badge {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            background:
+
+                linear-gradient(
+                    90deg,
+                    var(--forest-dark),
+                    var(--forest-light)
+                );
+
+            color: white;
+
+            padding:
+
+                12px
+                28px
+                12px
+                16px;
+
+            border-radius:
+
+                14px 28px 28px 14px;
+
+            font-weight: bold;
+
+            font-size: 22px;
+
+        }
+
+
+        .question-badge img {
+
+            width: 48px;
+
+            height: 48px;
+
+            object-fit: contain;
+
+        }
+
+
+        /* =========================
+           THÔNG BÁO KITKAT
+        ========================== */
+
+        .kitkat-counter {
+
+            position: absolute;
+
+            right: 0;
+
+            top: 0;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            font-weight: bold;
+
+            color: var(--text-dark);
+
+            font-size: 18px;
+
+        }
+
+
+        .kitkat-counter img {
+
+            width: 58px;
+
+            height: 58px;
+
+            object-fit: contain;
+
+        }
+
+
+        /* =========================
+           CÂU HỎI
+        ========================== */
+
+        .question-text {
+
+            position: relative;
+
+            z-index: 3;
+
+            text-align: center;
+
+            font-size: 34px;
+
+            line-height: 1.45;
+
+            font-weight: 800;
+
+            color: var(--text-dark);
+
+            margin:
+
+                15px
+                20px
+                45px;
+
+        }
+
+
+        /* =========================
+           ĐÁP ÁN
+        ========================== */
+
+        .options-list {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 18px;
+
+            position: relative;
+
+            z-index: 3;
+
+        }
+
+
+        .option-btn {
+
+            width: 100%;
+
+            min-height: 88px;
+
+            border-radius: 26px;
+
+            border:
+
+                2px solid
+                rgba(31, 83, 63, 0.35);
+
+            background:
+
+                linear-gradient(
+                    100deg,
+                    #f5f1e7,
+                    #e9eee5
+                );
+
+            color:
+
+                var(--text-dark);
+
+            font-size: 24px;
+
+            padding:
+
+                20px
+                90px
+                20px
+                35px;
+
+            cursor: pointer;
+
+            text-align: left;
+
+            position: relative;
+
+            transition:
+
+                0.25s ease;
+
+        }
+
+
+        .option-btn:hover:not(:disabled) {
+
+            transform:
+
+                translateY(-3px);
+
+            border-color:
+
+                var(--green);
+
+            box-shadow:
+
+                0 8px 20px
+                rgba(30, 100, 70, 0.18);
+
+        }
+
+
+        /* =========================
+           ĐÁP ÁN ĐÚNG
+        ========================== */
+
+        .option-btn.correct {
+
+            color: white;
+
+            background:
+
+                linear-gradient(
+                    90deg,
+                    var(--forest),
+                    var(--forest-light)
+                );
+
+            border:
+
+                4px solid
+                #1d5c46;
+
+            box-shadow:
+
+                inset
+                0
+                0
+                0
+                2px
+                rgba(255,255,255,0.55);
+
+        }
+
+
+        .option-btn.correct::before {
+
+            content: "✓";
+
+            font-size: 40px;
+
+            font-weight: bold;
+
+            margin-right: 20px;
+
+        }
+
+
+        /* KitKat xuất hiện ở đáp án đúng */
+
+        .option-btn.correct::after {
+
+            content: "";
+
+            position: absolute;
+
+            right: 25px;
+
+            top: 50%;
+
+            transform:
+
+                translateY(-50%);
+
+            width: 65px;
+
+            height: 65px;
+
+            background-image:
+
+                url("https://i.ibb.co/rG7JK6sq/IMG-2568.png");
+
+            background-size: contain;
+
+            background-repeat: no-repeat;
+
+            background-position: center;
+
+        }
+
+
+        /* =========================
+           ĐÁP ÁN SAI
+        ========================== */
+
+        @keyframes shake {
+
+            0% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            50% {
+                transform: translateX(10px);
+            }
+
+            75% {
+                transform: translateX(-6px);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+
+        }
+
+
+        .shake {
+
+            animation:
+
+                shake
+                0.45s
+                ease;
+
+            border-color:
+
+                #c94c45;
+
+            background:
+
+                #f7e4e1;
+
+        }
+
+
+        /* =========================
+           PHẦN THƯỞNG
+        ========================== */
+
+        .reward-box {
+
+            margin:
+
+                35px auto 25px;
+
+            width: fit-content;
+
+            min-width: 340px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 15px;
+
+            padding:
+
+                15px
+                25px;
+
+            border-radius: 22px;
+
+            background:
+
+                linear-gradient(
+                    135deg,
+                    #fffdf5,
+                    #f2ead8
+                );
+
+            border:
+
+                2px solid
+                rgba(166, 132, 67, 0.25);
+
+            position: relative;
+
+            z-index: 4;
+
+        }
+
+
+        .reward-box img {
+
+            width: 70px;
+
+            height: 70px;
+
+            object-fit: contain;
+
+        }
+
+
+        .reward-text {
+
+            display: flex;
+
+            flex-direction: column;
+
+        }
+
+
+        .reward-text small {
+
+            font-size: 17px;
+
+            color: #315343;
+
+        }
+
+
+        .reward-text strong {
+
+            font-size: 28px;
+
+            color: var(--forest-dark);
+
+        }
+
+
+        /* =========================
+           THANH TIẾN TRÌNH
+        ========================== */
+
+        .progress-container {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            gap: 18px;
+
+            position: relative;
+
+            z-index: 4;
+
+            margin-top: 15px;
+
+        }
+
+
+        .progress-step {
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+
+            gap: 5px;
+
+            font-weight: bold;
+
+            color: #51665b;
+
+            font-size: 14px;
+
+        }
+
+
+        .progress-circle {
+
+            width: 30px;
+
+            height: 30px;
+
+            border-radius: 50%;
+
+            border:
+
+                2px solid
+                #a8b7ad;
+
+            background:
+
+                #e7ebe7;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+        }
+
+
+        .progress-step.done .progress-circle {
+
+            background:
+
+                var(--green);
+
+            color: white;
+
+            border-color:
+
+                var(--green);
+
+        }
+
+
+        .progress-step.done .progress-circle::after {
+
+            content: "✓";
+
+            font-weight: bold;
+
+        }
+
+
+        /* =========================
+           TRANG TRÍ GÓC
+        ========================== */
+
+        .decoration {
+
+            position: absolute;
+
+            z-index: 2;
+
+            pointer-events: none;
+
+            object-fit: contain;
+
+        }
+
+
+        .decoration-left {
+
+            left: -20px;
+
+            bottom: -15px;
+
+            width: 230px;
+
+        }
+
+
+        .decoration-right {
+
+            right: -20px;
+
+            bottom: -15px;
+
+            width: 230px;
+
+            transform:
+
+                scaleX(-1);
+
+        }
+
+
+        /* =========================
+           MASCOT
+        ========================== */
+
+        .mascot {
+
+            position: absolute;
+
+            right: 15px;
+
+            bottom: 25px;
+
+            width: 190px;
+
+            z-index: 3;
+
+            pointer-events: none;
+
+        }
+
+
+        /* =========================
+           MÀN HÌNH KẾT THÚC
+        ========================== */
+
+        .result-screen {
+
+            display: none;
+
+            position: relative;
+
+            z-index: 5;
+
+            text-align: center;
+
+            padding:
+
+                80px
+                20px;
+
+        }
+
+
+        .result-screen h2 {
+
+            font-size: 42px;
+
+            color: var(--forest-dark);
+
+            margin-bottom: 20px;
+
+        }
+
+
+        .result-screen p {
+
+            font-size: 22px;
+
+            margin-bottom: 30px;
+
+        }
+
+
+        .restart-btn {
+
+            border: none;
+
+            background:
+
+                var(--forest);
+
+            color: white;
+
+            padding:
+
+                15px
+                35px;
+
+            border-radius: 16px;
+
+            font-size: 20px;
+
+            cursor: pointer;
+
+        }
+
+
+        /* =========================
+           MOBILE
+        ========================== */
+
+        @media (max-width: 650px) {
+
+            body {
+
+                padding: 0;
+
+            }
+
+
+            .game-container {
+
+                width: 100%;
+
+                padding:
+
+                    30px
+                    20px
+                    150px;
+
+                border-radius:
+
+                    28px
+                    28px
+                    0
+                    0;
+
+            }
+
+
+            .question-badge {
+
+                font-size: 16px;
+
+                padding-right: 18px;
+
+            }
+
+
+            .question-badge img {
+
+                width: 38px;
+
+                height: 38px;
+
+            }
+
+
+            .kitkat-counter {
+
+                font-size: 13px;
+
+            }
+
+
+            .kitkat-counter img {
+
+                width: 45px;
+
+                height: 45px;
+
+            }
+
+
+            .question-text {
+
+                font-size: 25px;
+
+                margin-bottom: 30px;
+
+            }
+
+
+            .option-btn {
+
+                min-height: 75px;
+
+                font-size: 18px;
+
+                padding:
+
+                    18px
+                    70px
+                    18px
+                    22px;
+
+            }
+
+
+            .reward-box {
+
+                min-width: 280px;
+
+            }
+
+
+            .mascot {
+
+                width: 135px;
+
+                right: 0;
+
+            }
+
+
+            .decoration {
+
+                width: 160px;
+
+            }
+
+
+            .progress-container {
+
+                gap: 8px;
+
+            }
+
+
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+<div class="game-wrapper">
+
+
+    <!-- =========================
+         BANNER TRUY TÌM KITKAT
+    ========================== -->
+
+    <div class="hero-banner">
+
+        <img
+            src="https://i.ibb.co/35BbmLqx/F855-EBE5-79-E7-4-BF3-9-B42-701-DBF111-AF8.jpg"
+            alt="Truy tìm KitKat">
+
+    </div>
+
+
+
+    <!-- =========================
+         KHUNG GAME
+    ========================== -->
+
+    <div class="game-container">
+
+
+        <!-- Lá trang trí -->
+
+        <img
+            class="decoration decoration-left"
+            src="https://i.ibb.co/sdb0x2PN/IMG-2571.png"
+            alt="">
+
+        <img
+            class="decoration decoration-right"
+            src="https://i.ibb.co/sdb0x2PN/IMG-2571.png"
+            alt="">
+
+
+        <!-- Mascot -->
+
+        <img
+            class="mascot"
+            src="https://i.ibb.co/RkRcQ7bN/IMG-2567.png"
+            alt="Nhân vật xanh">
+
+
+
+        <!-- Quiz -->
+
+        <div id="quiz-box">
+
+
+            <div class="question-top">
+
+
+                <div class="question-badge">
+
+                    <img
+                        src="https://i.ibb.co/5W35FBvX/IMG-2569.png"
+                        alt="Chocolate">
+
+                    <span id="question-counter">
+
+                        Câu hỏi 1 / 6
+
+                    </span>
+
+                </div>
+
+
+                <div class="kitkat-counter">
+
+                    <img
+                        src="https://i.ibb.co/rG7JK6sq/IMG-2568.png"
+                        alt="KitKat">
+
+                    <span id="kitkat-count">
+
+                        0
+
+                    </span>
+
+                    KitKat
+
+                </div>
+
+
+            </div>
+
+
+
+            <h1
+                class="question-text"
+                id="question-text">
+
+                Đang tải câu hỏi...
+
+            </h1>
+
+
+
+            <div
+                class="options-list"
+                id="options-list">
+
+            </div>
+
+
+
+            <!-- Phần thưởng -->
+
+            <div
+                class="reward-box"
+                id="reward-box">
+
+                <img
+                    src="https://i.ibb.co/rG7JK6sq/IMG-2568.png"
+                    alt="KitKat">
+
+                <div class="reward-text">
+
+                    <small>
+                        Trả lời đúng để nhận
+                    </small>
+
+                    <strong
+                        id="reward-text">
+
+                        1 KitKat!
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Tiến trình -->
+
+            <div
+                class="progress-container"
+                id="progress-container">
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- =========================
+             KẾT THÚC GAME
+        ========================== -->
+
+        <div
+            id="result-screen"
+            class="result-screen">
+
+
+            <h2>
+                🎉 Hoàn thành rồi!
+            </h2>
+
+
+            <p
+                id="final-result">
+
+            </p>
+
+
+            <button
+                class="restart-btn"
+                onclick="restartGame()">
+
+                Chơi lại
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+
+/* =========================
+   DỮ LIỆU CÂU HỎI
+========================= */
+
+const quizData = [
+
+    {
+        question:
+        "Tri thức khoa học ở thế kỷ XIX được tích lũy chủ yếu thông qua phương pháp nào?",
+
+        options: [
+
+            "Suy luận triết học thuần túy",
+
+            "Quan sát thực nghiệm, thám hiểm, khảo sát thực địa và đo đạc chính xác",
+
+            "Sách vở và giáo lý tôn giáo",
+
+            "Kinh nghiệm truyền miệng"
+
+        ],
+
+        correct: 1
+
+    },
+
+
+    {
+        question:
+        "Một đặc điểm nổi bật của khoa học thế kỷ XIX là:",
+
+        options: [
+
+            "Chỉ dựa vào tư duy triết học",
+
+            "Hạn chế sử dụng thực nghiệm",
+
+            "Xây dựng hệ thống phòng thí nghiệm và thiết bị đo đạc ngày càng tinh vi",
+
+            "Phụ thuộc chủ yếu vào giáo lý tôn giáo"
+
+        ],
+
+        correct: 2
+
+    },
+
+
+    {
+        question:
+        "Ai là nhà khoa học tiêu biểu gắn với hiện tượng cảm ứng điện từ?",
+
+        options: [
+
+            "Charles Darwin",
+
+            "Michael Faraday",
+
+            "Dmitri Mendeleev",
+
+            "James Watt"
+
+        ],
+
+        correct: 1
+
+    },
+
+
+    {
+        question:
+        "Năm 1869, Dmitri Mendeleev có đóng góp nổi bật nào?",
+
+        options: [
+
+            "Đề xuất học thuyết tiến hóa",
+
+            "Phát hiện hiện tượng cảm ứng điện từ",
+
+            "Xây dựng bảng hệ thống tuần hoàn các nguyên tố hóa học",
+
+            "Phát minh động cơ đốt trong"
+
+        ],
+
+        correct: 2
+
+    },
+
+
+    {
+        question:
+        "Bước ngoặt của thế kỷ XIX thể hiện rõ nhất ở sự chuyển biến nào?",
+
+        options: [
+
+            "Từ thực nghiệm sang suy đoán",
+
+            "Từ tri thức phân tán sang nghiên cứu chuyên môn hóa, thực nghiệm có hệ thống và đo đạc chính xác",
+
+            "Từ khoa học chuyên môn hóa sang tri thức tổng hợp",
+
+            "Từ khoa học sang tôn giáo"
+
+        ],
+
+        correct: 1
+
+    },
+
+
+    {
+        question:
+        "Vì sao thế kỷ XIX được xem là một bước ngoặt quan trọng của khoa học?",
+
+        options: [
+
+            "Vì khoa học quay lại dựa chủ yếu vào kinh nghiệm",
+
+            "Vì khoa học ngày càng gắn chặt với sản xuất và công nghệ",
+
+            "Vì khoa học không còn cần thực nghiệm",
+
+            "Vì các ngành khoa học bị hợp nhất thành một ngành duy nhất"
+
+        ],
+
+        correct: 1
+
+    }
+
+];
+
+
+
+let currentQuestionIndex = 0;
+
+let kitkatCollected = 0;
+
+let isTransitioning = false;
+
+
+
+const questionCounterEl =
+document.getElementById("question-counter");
+
+const questionTextEl =
+document.getElementById("question-text");
+
+const optionsListEl =
+document.getElementById("options-list");
+
+const kitkatCountEl =
+document.getElementById("kitkat-count");
+
+const progressContainer =
+document.getElementById("progress-container");
+
+const quizBox =
+document.getElementById("quiz-box");
+
+const resultScreen =
+document.getElementById("result-screen");
+
+const finalResult =
+document.getElementById("final-result");
+
+
+
+/* =========================
+   LOAD CÂU HỎI
+========================= */
+
+function loadQuestion() {
+
+    isTransitioning = false;
+
+
+    const currentQ =
+    quizData[currentQuestionIndex];
+
+
+    questionCounterEl.innerText =
+
+        `Câu hỏi ${currentQuestionIndex + 1} / ${quizData.length}`;
+
+
+    questionTextEl.innerText =
+    currentQ.question;
+
+
+    optionsListEl.innerHTML = "";
+
+
+    currentQ.options.forEach(
+        (option, index) => {
+
+
+            const button =
+            document.createElement("button");
+
+
+            button.className =
+            "option-btn";
+
+
+            button.innerText =
+            option;
+
+
+            button.onclick =
+            () => selectOption(index, button);
+
+
+            optionsListEl.appendChild(button);
+
+
+        }
+    );
+
+
+    renderProgress();
+
+}
+
+
+
+/* =========================
+   CHỌN ĐÁP ÁN
+========================= */
+
+function selectOption(
+    selectedIndex,
+    selectedButton
+) {
+
+
+    if (isTransitioning) return;
+
+
+    const currentQ =
+    quizData[currentQuestionIndex];
+
+
+    /* =========================
+       ĐÚNG
+    ========================= */
+
+    if (
+        selectedIndex === currentQ.correct
+    ) {
+
+
+        isTransitioning = true;
+
+
+        selectedButton.classList.add(
+            "correct"
+        );
+
+
+        const allButtons =
+        optionsListEl.querySelectorAll(
+            ".option-btn"
+        );
+
+
+        allButtons.forEach(
+            button =>
+            button.disabled = true
+        );
+
+
+        kitkatCollected++;
+
+
+        kitkatCountEl.innerText =
+        kitkatCollected;
+
+
+        renderProgress();
+
+
+        /* Pháo hoa */
+
+        confetti({
+
+            particleCount: 90,
+
+            spread: 75,
+
+            origin: {
+                y: 0.65
+            }
+
+        });
+
+
+        /* Chờ trước khi sang câu */
+
+        setTimeout(
+            () => {
+
+
+                currentQuestionIndex++;
+
+
+                if (
+                    currentQuestionIndex
+                    <
+                    quizData.length
+                ) {
+
+
+                    loadQuestion();
+
+
+                } else {
+
+
+                    showResult();
+
+
+                }
+
+
+            },
+
+            1100
+
+        );
+
+
+    }
+
+
+    /* =========================
+       SAI
+    ========================= */
+
+    else {
+
+
+        selectedButton.classList.add(
+            "shake"
+        );
+
+
+        setTimeout(
+            () => {
+
+
+                selectedButton.classList.remove(
+                    "shake"
+                );
+
+
+            },
+
+            450
+
+        );
+
+
+    }
+
+
+}
+
+
+
+/* =========================
+   THANH TIẾN TRÌNH
+========================= */
+
+function renderProgress() {
+
+
+    progressContainer.innerHTML = "";
+
+
+    for (
+
+        let i = 0;
+
+        i < quizData.length;
+
+        i++
+
+    ) {
+
+
+        const step =
+        document.createElement("div");
+
+
+        step.className =
+        "progress-step";
+
+
+        if (
+            i < currentQuestionIndex
+        ) {
+
+            step.classList.add(
+                "done"
+            );
+
+        }
+
+
+        const circle =
+        document.createElement("div");
+
+
+        circle.className =
+        "progress-circle";
+
+
+        const number =
+        document.createElement("span");
+
+
+        number.innerText =
+        i + 1;
+
+
+        circle.appendChild(
+            number
+        );
+
+
+        const label =
+        document.createElement("span");
+
+
+        label.innerText =
+        i + 1;
+
+
+        step.appendChild(
+            circle
+        );
+
+
+        step.appendChild(
+            label
+        );
+
+
+        progressContainer.appendChild(
+            step
+        );
+
+
+    }
+
+
+}
+
+
+
+/* =========================
+   KẾT THÚC
+========================= */
+
+function showResult() {
+
+
+    quizBox.style.display =
+    "none";
+
+
+    resultScreen.style.display =
+    "block";
+
+
+    finalResult.innerText =
+
+        `Bạn đã thu thập được ${kitkatCollected} / ${quizData.length} KitKat! 🍫`;
+
+
+    confetti({
+
+        particleCount: 180,
+
+        spread: 110,
+
+        origin: {
+            y: 0.55
+        }
+
+    });
+
+
+}
+
+
+
+/* =========================
+   CHƠI LẠI
+========================= */
+
+function restartGame() {
+
+
+    currentQuestionIndex = 0;
+
+    kitkatCollected = 0;
+
+    isTransitioning = false;
+
+
+    kitkatCountEl.innerText = 0;
+
+
+    quizBox.style.display =
+    "block";
+
+
+    resultScreen.style.display =
+    "none";
+
+
+    loadQuestion();
+
+
+}
+
+
+
+/* =========================
+   BẮT ĐẦU GAME
+========================= */
+
+loadQuestion();
+
+
+</script>
+
+
+</body>
+</html>
