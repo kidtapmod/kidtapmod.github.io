@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đại Cương Khoa Học Tự Nhiên - Mini Game</title>
+    <!-- Thư viện hiệu ứng pháo hoa khi trả lời đúng -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #22c55e;
+            --primary-dark: #15803d;
+            --bg-gradient: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+            --card-bg: rgba(6, 78, 59, 0.85);
+            --text-color: #f0fdf4;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .game-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+        }
+
+        /* Nhân vật đứng trên khung câu hỏi */
+        .character-container {
+            position: relative;
+            z-index: 10;
+            margin-bottom: -45px;
+            text-align: center;
+        }
+
+        .character-avatar {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 4px solid #4ade80;
+            object-fit: cover;
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
+            background: #fff;
+        }
+
+        .game-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(74, 222, 128, 0.3);
+            width: 100%;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+            padding: 60px 30px 30px 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Header thông tin game */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            padding-bottom: 12px;
+        }
+
+        .header h3 {
+            font-size: 18px;
+            color: #4ade80;
+            margin-bottom: 4px;
+        }
+
+        .header p {
+            font-size: 13px;
+            color: #bbf7d0;
+        }
+
+        /* Phần Câu hỏi */
+        .quiz-box h2 {
+            font-size: 17px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .question-counter {
+            font-size: 12px;
+            color: #86efac;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* Các lựa chọn đáp án */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--text-color);
+            padding: 14px 18px;
+            border-radius: 12px;
+            text-align: left;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background 0.2s, border-color 0.2s, transform 0.2s;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background: rgba(34, 197, 94, 0.25);
+            border-color: #4ade80;
+            transform: translateY(-2px);
+        }
+
+        .option-btn.correct {
+            background: rgba(34, 197, 94, 0.4) !important;
+            border-color: #22c55e !important;
+            color: #dcfce7 !important;
+        }
+
+        /* Hiệu ứng rung khi chọn sai */
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(6px); }
+            100% { transform: translateX(0); }
+        }
+
+        .shake {
+            animation: shake 0.4s ease-in-out;
+            background: rgba(239, 68, 68, 0.3) !important;
+            border-color: #ef4444 !important;
+        }
+
+        /* Màn hình kết thúc */
+        .result-screen {
+            text-align: center;
+            display: none;
+            padding: 20px 0;
+        }
+
+        .result-screen h2 {
+            font-size: 24px;
+            margin-bottom: 12px;
+            color: #4ade80;
+        }
+
+        .result-screen p {
+            font-size: 16px;
+            color: #bbf7d0;
+            margin-bottom: 25px;
+        }
+
+        .restart-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .restart-btn:hover {
+            background: var(--primary-dark);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-wrapper">
+        <!-- Nhân vật đứng phía trên khung câu hỏi với link ảnh trực tiếp -->
+        <div class="character-container">
+            <img src="https://i.ibb.co/vCFFr4QR/6057809-D-61-B8-4856-8-AEB-7-ADB8-A0-D55-C0.png" alt="Nhân vật khoa học" class="character-avatar">
+        </div>
+
+        <div class="game-container">
+            <!-- Header -->
+            <div class="header">
+                <h3>ĐẠI CƯƠNG KHOA HỌC TỰ NHIÊN</h3>
+                <p>Thử tài kiến thức khoa học</p>
+            </div>
+
+            <!-- Khung Quiz -->
+            <div id="quiz-box" class="quiz-box">
+                <div class="question-counter" id="question-counter">Câu hỏi 1 / 6</div>
+                <h2 id="question-text">Đang tải câu hỏi...</h2>
+                
+                <div class="options-list" id="options-list">
+                    <!-- Các lựa chọn sẽ được render bằng JS -->
+                </div>
+            </div>
+
+            <!-- Màn hình tổng kết -->
+            <div id="result-screen" class="result-screen">
+                <h2>Chúc mừng bạn! 🎉</h2>
+                <p>Bạn đã hoàn thành xuất sắc tất cả các câu hỏi trắc nghiệm khoa học tự nhiên.</p>
+                <button class="restart-btn" onclick="restartGame()">Chơi lại từ đầu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Đã bỏ câu 11 và 15, tổng cộng giữ lại 6 câu
+        const quizData = [
+            {
+                question: "Tri thức khoa học ở thế kỷ XIX được tích lũy chủ yếu thông qua phương pháp nào?",
+                options: [
+                    "Suy luận triết học thuần túy",
+                    "Quan sát thực nghiệm, thám hiểm, khảo sát thực địa và đo đạc chính xác",
+                    "Sách vở và giáo lý tôn giáo",
+                    "Kinh nghiệm truyền miệng"
+                ],
+                correct: 1
+            },
+            {
+                question: "Một đặc điểm nổi bật của khoa học thế kỷ XIX là:",
+                options: [
+                    "Chỉ dựa vào tư duy triết học",
+                    "Hạn chế sử dụng thực nghiệm",
+                    "Xây dựng hệ thống phòng thí nghiệm và thiết bị đo đạc ngày càng tinh vi",
+                    "Phụ thuộc chủ yếu vào giáo lý tôn giáo"
+                ],
+                correct: 2
+            },
+            {
+                question: "Ai là nhà khoa học tiêu biểu gắn với hiện tượng cảm ứng điện từ?",
+                options: [
+                    "Charles Darwin",
+                    "Michael Faraday",
+                    "Dmitri Mendeleev",
+                    "James Watt"
+                ],
+                correct: 1
+            },
+            {
+                question: "Năm 1869, Dmitri Mendeleev có đóng góp nổi bật nào?",
+                options: [
+                    "Đề xuất học thuyết tiến hóa",
+                    "Phát hiện hiện tượng cảm ứng điện từ",
+                    "Xây dựng bảng hệ thống tuần hoàn các nguyên tố hóa học",
+                    "Phát minh động cơ đốt trong"
+                ],
+                correct: 2
+            },
+            {
+                question: "Bước ngoặt của thế kỷ XIX thể hiện rõ nhất ở sự chuyển biến nào?",
+                options: [
+                    "Từ thực nghiệm sang suy đoán",
+                    "Từ khoa học chuyên môn hóa sang tri thức tổng hợp",
+                    "From tri thức phân tán sang nghiên cứu chuyên môn hóa, thực nghiệm có hệ thống và đo đạc chính xác",
+                    "Từ khoa học sang tôn giáo"
+                ],
+                correct: 2
+            },
+            {
+                question: "Vì sao thế kỷ XIX được xem là một bước ngoặt quan trọng của khoa học?",
+                options: [
+                    "Vì khoa học quay lại dựa chủ yếu vào kinh nghiệm",
+                    "Vì khoa học ngày càng gắn chặt với sản xuất và công nghệ",
+                    "Vì khoa học không còn cần thực nghiệm",
+                    "Vì các ngành khoa học bị hợp nhất thành một ngành duy nhất"
+                ],
+                correct: 1
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let isTransitioning = false;
+
+        const questionCounterEl = document.getElementById("question-counter");
+        const questionTextEl = document.getElementById("question-text");
+        const optionsListEl = document.getElementById("options-list");
+        const quizBoxEl = document.getElementById("quiz-box");
+        const resultScreenEl = document.getElementById("result-screen");
+
+        function loadQuestion() {
+            isTransitioning = false;
+            const currentQ = quizData[currentQuestionIndex];
+            questionCounterEl.innerText = `Câu hỏi ${currentQuestionIndex + 1} / ${quizData.length}`;
+            questionTextEl.innerText = currentQ.question;
+            
+            optionsListEl.innerHTML = "";
+            currentQ.options.forEach((option, index) => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn"; // Reset toàn bộ class sạch sẽ, tránh bị dính trạng thái cũ
+                btn.innerText = option;
+                btn.onclick = () => selectOption(index, btn);
+                optionsListEl.appendChild(btn);
+            });
+        }
+
+        function selectOption(selectedIndex, selectedBtn) {
+            if (isTransitioning) return;
+
+            const currentQ = quizData[currentQuestionIndex];
+
+            if (selectedIndex === currentQ.correct) {
+                isTransitioning = true;
+                selectedBtn.classList.add("correct");
+                
+                const allButtons = optionsListEl.querySelectorAll(".option-btn");
+                allButtons.forEach(btn => btn.disabled = true);
+
+                confetti({
+                    particleCount: 40,
+                    spread: 50,
+                    origin: { y: 0.6 }
+                });
+
+                setTimeout(() => {
+                    currentQuestionIndex++;
+                    if (currentQuestionIndex < quizData.length) {
+                        loadQuestion();
+                    } else {
+                        showResult();
+                    }
+                }, 800);
+
+            } else {
+                selectedBtn.classList.add("shake");
+                setTimeout(() => {
+                    selectedBtn.classList.remove("shake");
+                }, 400);
+            }
+        }
+
+        function showResult() {
+            quizBoxEl.style.display = "none";
+            resultScreenEl.style.display = "block";
+            confetti({
+                particleCount: 100,
+                spread: 80,
+                origin: { y: 0.5 }
+            });
+        }
+
+        function restartGame() {
+            currentQuestionIndex = 0;
+            quizBoxEl.style.display = "block";
+            resultScreenEl.style.display = "none";
+            loadQuestion();
+        }
+
+        loadQuestion();
+    </script>
+</body>
+</html>
