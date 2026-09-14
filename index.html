@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Truy tìm KitKat</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+:root{
+    --green:#07563f;
+    --green2:#087052;
+    --green3:#0d7a59;
+    --cream:#fffaf0;
+    --cream2:#f8f3e7;
+    --text:#064936;
+    --border:#adc1b6;
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html,body{
+    min-height:100%;
+}
+
+body{
+    font-family:"Segoe UI",Arial,sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #07563f 0%,
+            #034533 100%
+        );
+
+    color:var(--text);
+
+    overflow-x:hidden;
+}
+
+/* =========================
+   WRAPPER
+========================= */
+
+.game-wrapper{
+    width:100%;
+    max-width:720px;
+    margin:0 auto;
+    position:relative;
+}
+
+/* =========================
+   BANNER
+========================= */
+
+.hero-banner{
+    width:100%;
+    position:relative;
+    z-index:3;
+}
+
+.hero-banner img{
+    width:100%;
+    height:auto;
+    display:block;
+}
+
+/* =========================
+   CARD
+========================= */
+
+.game-container{
+    position:relative;
+
+    width:calc(100% - 28px);
+    min-height:850px;
+
+    margin:-1px auto 0;
+
+    padding:
+        36px
+        30px
+        190px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #fffdf5,
+            #faf4e7
+        );
+
+    border-radius:
+        30px
+        30px
+        24px
+        24px;
+
+    overflow:hidden;
+}
+
+/* viền nét đứt trong card */
+
+.game-container::before{
+    content:"";
+
+    position:absolute;
+
+    top:18px;
+    left:18px;
+    right:18px;
+    bottom:18px;
+
+    border:
+        2px dashed
+        rgba(7,86,63,.14);
+
+    border-radius:24px;
+
+    pointer-events:none;
+    z-index:0;
+}
+
+.quiz-box,
+.result-screen{
+    position:relative;
+    z-index:5;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+
+.quiz-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    gap:15px;
+
+    margin-bottom:32px;
+
+    position:relative;
+    z-index:8;
+}
+
+/* badge câu hỏi */
+
+.question-badge{
+    display:flex;
+    align-items:center;
+
+    gap:9px;
+
+    min-height:58px;
+
+    padding:
+        7px
+        18px
+        7px
+        8px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #09664b,
+            #087755
+        );
+
+    color:white;
+
+    border-radius:28px;
+
+    font-size:16px;
+    font-weight:700;
+
+    box-shadow:
+        0 7px 15px
+        rgba(0,0,0,.10);
+
+    white-space:nowrap;
+}
+
+.question-badge img{
+    width:48px;
+    height:48px;
+    object-fit:contain;
+    flex-shrink:0;
+}
+
+/* bộ đếm kitkat */
+
+.reward-counter{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    gap:8px;
+
+    height:47px;
+
+    padding:0 14px;
+
+    border:
+        2px solid
+        #e5dcc9;
+
+    background:
+        rgba(255,250,239,.90);
+
+    border-radius:24px;
+
+    font-size:15px;
+    font-weight:700;
+
+    color:#c52929;
+
+    white-space:nowrap;
+}
+
+.reward-counter .mini-choco{
+    font-size:18px;
+}
+
+/* =========================
+   QUESTION
+========================= */
+
+#question-text{
+    max-width:590px;
+
+    margin:
+        0
+        auto
+        32px;
+
+    padding:0 8px;
+
+    text-align:center;
+
+    color:#064936;
+
+    font-size:27px;
+    font-weight:800;
+    line-height:1.32;
+}
+
+/* =========================
+   OPTIONS
+========================= */
+
+.options-list{
+    display:flex;
+    flex-direction:column;
+
+    gap:15px;
+
+    width:100%;
+    max-width:590px;
+
+    margin:0 auto;
+}
+
+.option-btn{
+    position:relative;
+
+    display:flex;
+    align-items:center;
+
+    width:100%;
+    min-height:78px;
+
+    padding:
+        15px
+        22px;
+
+    border:
+        2px solid
+        var(--border);
+
+    border-radius:22px;
+
+    background:
+        linear-gradient(
+            120deg,
+            #fbfbf4,
+            #edf3ee
+        );
+
+    color:#124d3d;
+
+    font-size:18px;
+    line-height:1.35;
+
+    text-align:left;
+
+    cursor:pointer;
+
+    transition:
+        transform .18s ease,
+        border-color .18s ease,
+        background .18s ease;
+
+    -webkit-tap-highlight-color:
+        transparent;
+}
+
+.option-btn:hover:not(:disabled){
+    border-color:#248362;
+    transform:translateY(-1px);
+}
+
+.option-btn:disabled{
+    cursor:default;
+}
+
+/* =========================
+   CORRECT
+========================= */
+
+.option-btn.correct{
+    min-height:84px;
+
+    padding:
+        15px
+        92px
+        15px
+        72px;
+
+    color:white;
+
+    background:
+        linear-gradient(
+            135deg,
+            #09684c,
+            #087253
+        );
+
+    border:
+        3px solid
+        #0b7757;
+
+    box-shadow:
+        inset
+        0 0 0 3px
+        rgba(255,255,255,.83);
+
+    font-weight:500;
+}
+
+/* PNG 2A */
+
+.correct-check{
+    position:absolute;
+
+    left:10px;
+    top:50%;
+
+    transform:
+        translateY(-50%);
+
+    width:51px;
+    height:51px;
+
+    object-fit:contain;
+
+    pointer-events:none;
+}
+
+/* PNG 2B */
+
+.correct-kitkat{
+    position:absolute;
+
+    right:6px;
+    top:50%;
+
+    transform:
+        translateY(-50%);
+
+    width:80px;
+    height:65px;
+
+    object-fit:contain;
+
+    pointer-events:none;
+}
+
+/* =========================
+   WRONG
+========================= */
+
+@keyframes shake{
+    0%,100%{
+        transform:translateX(0);
+    }
+
+    25%{
+        transform:translateX(-7px);
+    }
+
+    50%{
+        transform:translateX(7px);
+    }
+
+    75%{
+        transform:translateX(-5px);
+    }
+}
+
+.option-btn.wrong{
+    animation:
+        shake
+        .35s ease;
+
+    border-color:#dc6868;
+    background:#fff0ee;
+}
+
+/* =========================
+   REWARD
+========================= */
+
+.reward-area{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    min-height:100px;
+
+    margin:
+        18px
+        auto
+        6px;
+
+    position:relative;
+    z-index:9;
+}
+
+.reward-popup{
+    display:none;
+
+    width:330px;
+    max-width:75%;
+
+    height:auto;
+
+    object-fit:contain;
+
+    animation:
+        rewardPop
+        .35s ease;
+}
+
+.reward-popup.show{
+    display:block;
+}
+
+@keyframes rewardPop{
+    from{
+        opacity:0;
+
+        transform:
+            scale(.75)
+            translateY(10px);
+    }
+
+    to{
+        opacity:1;
+
+        transform:
+            scale(1)
+            translateY(0);
+    }
+}
+
+/* =========================
+   PROGRESS
+========================= */
+
+.progress{
+    position:relative;
+    z-index:9;
+
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+
+    gap:9px;
+
+    margin:
+        16px
+        auto
+        0;
+}
+
+.progress-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+    gap:5px;
+
+    color:#335e50;
+
+    font-size:12px;
+    font-weight:600;
+}
+
+.progress-circle{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    width:27px;
+    height:27px;
+
+    border:
+        3px solid
+        #aebdb6;
+
+    border-radius:50%;
+
+    background:#e9ece7;
+
+    color:white;
+
+    font-size:14px;
+    font-weight:800;
+}
+
+.progress-item.current
+.progress-circle{
+    background:white;
+    border-color:#16805e;
+}
+
+.progress-item.done
+.progress-circle{
+    background:#269469;
+    border-color:#269469;
+}
+
+/* =========================
+   BOTTOM DECORATION
+========================= */
+
+.bottom-decoration{
+    position:absolute;
+
+    left:0;
+    right:0;
+    bottom:0;
+
+    height:190px;
+
+    z-index:2;
+
+    pointer-events:none;
+}
+
+/* PNG 4 */
+
+.decoration-left{
+    position:absolute;
+
+    left:-5px;
+    bottom:-4px;
+
+    width:235px;
+    height:auto;
+
+    object-fit:contain;
+
+    object-position:
+        left
+        bottom;
+}
+
+/* PNG 5 */
+
+.decoration-right{
+    position:absolute;
+
+    right:-5px;
+    bottom:-4px;
+
+    width:235px;
+    height:auto;
+
+    object-fit:contain;
+
+    object-position:
+        right
+        bottom;
+}
+
+/* PNG 6 */
+
+.mascot{
+    position:absolute;
+
+    right:23px;
+    bottom:69px;
+
+    width:126px;
+    height:auto;
+
+    object-fit:contain;
+
+    z-index:4;
+
+    filter:
+        drop-shadow(
+            0 5px 7px
+            rgba(0,0,0,.16)
+        )
+        saturate(1.08)
+        contrast(1.04);
+}
+
+/* =========================
+   RESULT
+========================= */
+
+.result-screen{
+    display:none;
+
+    min-height:600px;
+
+    text-align:center;
+
+    padding:
+        70px
+        25px
+        180px;
+}
+
+.result-screen h2{
+    margin-bottom:20px;
+
+    color:#064936;
+
+    font-size:34px;
+    line-height:1.2;
+}
+
+.result-screen p{
+    margin:
+        0
+        auto
+        25px;
+
+    max-width:480px;
+
+    color:#175846;
+
+    font-size:19px;
+    line-height:1.5;
+}
+
+.final-reward{
+    display:block;
+
+    width:330px;
+    max-width:90%;
+
+    margin:
+        0
+        auto
+        25px;
+}
+
+.restart-btn{
+    border:0;
+
+    padding:
+        14px
+        36px;
+
+    border-radius:18px;
+
+    background:#075b43;
+
+    color:white;
+
+    font-size:18px;
+
+    cursor:pointer;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:650px){
+
+    .game-wrapper{
+        max-width:553px;
+    }
+
+    .game-container{
+        width:100%;
+
+        min-height:
+            calc(100vh - 170px);
+
+        margin:0;
+
+        padding:
+            28px
+            25px
+            185px;
+
+        border-radius:
+            27px
+            27px
+            0
+            0;
+    }
+
+    .game-container::before{
+        top:15px;
+        left:20px;
+        right:20px;
+        bottom:15px;
+    }
+
+    .quiz-top{
+        margin-bottom:29px;
+    }
+
+    .question-badge{
+        min-height:62px;
+
+        padding:
+            7px
+            17px
+            7px
+            8px;
+
+        font-size:16px;
+    }
+
+    .question-badge img{
+        width:49px;
+        height:49px;
+    }
+
+    .reward-counter{
+        height:45px;
+
+        padding:0 12px;
+
+        font-size:14px;
+    }
+
+    #question-text{
+        max-width:480px;
+
+        font-size:25px;
+
+        margin-bottom:31px;
+
+        padding:
+            0
+            12px;
+    }
+
+    .options-list{
+        gap:15px;
+    }
+
+    .option-btn{
+        min-height:80px;
+
+        border-radius:21px;
+
+        padding:
+            15px
+            21px;
+
+        font-size:17px;
+    }
+
+    .option-btn.correct{
+        padding:
+            15px
+            86px
+            15px
+            70px;
+    }
+
+    .correct-check{
+        width:49px;
+        height:49px;
+
+        left:9px;
+    }
+
+    .correct-kitkat{
+        width:76px;
+        height:62px;
+
+        right:5px;
+    }
+
+    .reward-area{
+        min-height:88px;
+
+        margin-top:15px;
+    }
+
+    .reward-popup{
+        width:320px;
+        max-width:86%;
+    }
+
+    .progress{
+        margin-top:12px;
+    }
+
+    .bottom-decoration{
+        height:185px;
+    }
+
+    .decoration-left{
+        width:230px;
+
+        left:-13px;
+        bottom:-4px;
+    }
+
+    .decoration-right{
+        width:230px;
+
+        right:-13px;
+        bottom:-4px;
+    }
+
+    .mascot{
+        width:130px;
+
+        right:24px;
+        bottom:73px;
+
+        filter:
+            drop-shadow(
+                0 5px 7px
+                rgba(0,0,0,.17)
+            )
+            saturate(1.10)
+            contrast(1.05);
+    }
+}
+
+/* =========================
+   MOBILE HẸP
+========================= */
+
+@media(max-width:400px){
+
+    .game-container{
+        padding:
+            24px
+            20px
+            165px;
+    }
+
+    .question-badge{
+        font-size:14px;
+        min-height:55px;
+    }
+
+    .question-badge img{
+        width:43px;
+        height:43px;
+    }
+
+    .reward-counter{
+        height:41px;
+
+        padding:0 10px;
+
+        font-size:13px;
+    }
+
+    #question-text{
+        font-size:22px;
+        margin-bottom:25px;
+    }
+
+    .option-btn{
+        min-height:72px;
+
+        font-size:16px;
+
+        padding:
+            13px
+            18px;
+    }
+
+    .option-btn.correct{
+        padding:
+            13px
+            75px
+            13px
+            61px;
+    }
+
+    .correct-check{
+        width:43px;
+        height:43px;
+    }
+
+    .correct-kitkat{
+        width:67px;
+    }
+
+    .decoration-left,
+    .decoration-right{
+        width:195px;
+    }
+
+    .mascot{
+        width:112px;
+
+        right:19px;
+        bottom:65px;
+    }
+}
+
+/* =========================
+   LAPTOP / DESKTOP
+   BAO QUÁT NGAY TỪ ĐẦU
+========================= */
+
+@media(min-width:1000px){
+
+    body{
+        padding:
+            10px
+            0
+            24px;
+    }
+
+    .game-wrapper{
+        max-width:760px;
+    }
+
+    /* banner thấp hơn để không phải cuộn */
+
+    .hero-banner{
+        width:100%;
+
+        max-height:210px;
+
+        overflow:hidden;
+
+        border-radius:
+            20px
+            20px
+            0
+            0;
+    }
+
+    .hero-banner img{
+        width:100%;
+
+        height:210px;
+
+        object-fit:cover;
+
+        object-position:center;
+    }
+
+    .game-container{
+        width:
+            calc(100% - 36px);
+
+        min-height:0;
+
+        margin:
+            -2px
+            auto
+            15px;
+
+        padding:
+            24px
+            45px
+            145px;
+
+        border-radius:
+            28px
+            28px
+            22px
+            22px;
+    }
+
+    .game-container::before{
+        top:16px;
+        left:20px;
+        right:20px;
+        bottom:16px;
+    }
+
+    .quiz-top{
+        margin-bottom:18px;
+    }
+
+    .question-badge{
+        min-height:50px;
+
+        padding:
+            5px
+            16px
+            5px
+            7px;
+
+        font-size:16px;
+    }
+
+    .question-badge img{
+        width:45px;
+        height:45px;
+    }
+
+    .reward-counter{
+        height:43px;
+
+        padding:
+            0
+            12px;
+
+        font-size:14px;
+    }
+
+    #question-text{
+        max-width:620px;
+
+        margin:
+            0
+            auto
+            20px;
+
+        font-size:25px;
+        line-height:1.28;
+    }
+
+    .options-list{
+        max-width:620px;
+        gap:10px;
+    }
+
+    .option-btn{
+        min-height:60px;
+
+        padding:
+            11px
+            19px;
+
+        font-size:17px;
+        line-height:1.28;
+
+        border-radius:18px;
+    }
+
+    .option-btn.correct{
+        min-height:64px;
+
+        padding:
+            11px
+            92px
+            11px
+            67px;
+    }
+
+    .correct-check{
+        width:45px;
+        height:45px;
+
+        left:9px;
+    }
+
+    .correct-kitkat{
+        width:75px;
+        height:58px;
+
+        right:6px;
+    }
+
+    .reward-area{
+        min-height:72px;
+
+        margin:
+            10px
+            auto
+            0;
+    }
+
+    .reward-popup{
+        width:300px;
+        max-width:none;
+    }
+
+    .progress{
+        gap:9px;
+        margin-top:8px;
+    }
+
+    .progress-circle{
+        width:27px;
+        height:27px;
+    }
+
+    .bottom-decoration{
+        height:165px;
+    }
+
+    .decoration-left{
+        width:205px;
+
+        left:-8px;
+        bottom:-5px;
+    }
+
+    .decoration-right{
+        width:205px;
+
+        right:-8px;
+        bottom:-5px;
+    }
+
+    /*
+       Mascot lớn hơn rõ rệt
+       nhưng vẫn giữ góc phải.
+    */
+
+    .mascot{
+        width:155px;
+
+        right:18px;
+        bottom:50px;
+
+        z-index:5;
+
+        filter:
+            drop-shadow(
+                0 7px 10px
+                rgba(0,0,0,.20)
+            )
+            saturate(1.12)
+            contrast(1.06);
+    }
+
+    .result-screen{
+        min-height:0;
+
+        padding:
+            38px
+            20px
+            130px;
+    }
+
+    .result-screen h2{
+        font-size:32px;
+    }
+
+    .result-screen p{
+        font-size:18px;
+    }
+
+    .final-reward{
+        width:300px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="game-wrapper">
+
+    <div class="hero-banner">
+        <img
+            src="https://i.ibb.co/35BbmLqx/F855-EBE5-79-E7-4-BF3-9-B42-701-DBF111-AF8.jpg"
+            alt="Truy tìm KitKat">
+    </div>
+
+
+    <main class="game-container">
+
+        <section
+            id="quiz-box"
+            class="quiz-box">
+
+            <div class="quiz-top">
+
+                <div class="question-badge">
+
+                    <!-- PNG 1 -->
+                    <img
+                        src="https://i.ibb.co/cStTPwSL/1.png"
+                        alt="">
+
+                    <span id="question-counter">
+                        Câu hỏi 1 / 6
+                    </span>
+
+                </div>
+
+
+                <div class="reward-counter">
+
+                    <span class="mini-choco">
+                        🍫
+                    </span>
+
+                    <span id="reward-count">
+                        0
+                    </span>
+
+                    <span>/ 6</span>
+
+                </div>
+
+            </div>
+
+
+            <h1 id="question-text">
+                Đang tải câu hỏi...
+            </h1>
+
+
+            <div
+                id="options-list"
+                class="options-list">
+            </div>
+
+
+            <div class="reward-area">
+
+                <!-- PNG 3 -->
+                <img
+                    id="reward-popup"
+                    class="reward-popup"
+                    src="https://i.ibb.co/spmdhq6h/3.png"
+                    alt="Bạn nhận được 1 KitKat">
+
+            </div>
+
+
+            <div
+                id="progress"
+                class="progress">
+            </div>
+
+        </section>
+
+
+        <section
+            id="result-screen"
+            class="result-screen">
+
+            <h2>
+                🎉 Hoàn thành rồi!
+            </h2>
+
+            <p>
+                Bạn đã thu thập được
+                <strong>
+                    6 / 6 KitKat!
+                </strong>
+            </p>
+
+            <img
+                class="final-reward"
+                src="https://i.ibb.co/spmdhq6h/3.png"
+                alt="KitKat">
+
+            <br>
+
+            <button
+                class="restart-btn"
+                onclick="restartGame()">
+                Chơi lại
+            </button>
+
+        </section>
+
+
+        <div class="bottom-decoration">
+
+            <!-- PNG 4 -->
+            <img
+                class="decoration-left"
+                src="https://i.ibb.co/v4JdkbDY/4.png"
+                alt="">
+
+            <!-- PNG 5 -->
+            <img
+                class="decoration-right"
+                src="https://i.ibb.co/Vp22VRqY/5.png"
+                alt="">
+
+            <!-- PNG 6 -->
+            <img
+                class="mascot"
+                src="https://i.ibb.co/n83B3nsn/6.png"
+                alt="Mascot">
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+const ASSETS = {
+
+    correctCheck:
+        "https://i.ibb.co/1t435h2J/5-B1-DCE9-A-8-F91-4-DDD-B223-AB3827-F1-F74-D.png",
+
+    correctKitkat:
+        "https://i.ibb.co/qYWgXNjg/IMG-2587.png"
+
+};
+
+
+const quizData = [
+
+    {
+        question:
+            "Tri thức khoa học ở thế kỷ XIX được tích lũy chủ yếu thông qua phương pháp nào?",
+
+        options:[
+            "Suy luận triết học thuần túy",
+
+            "Quan sát thực nghiệm, thám hiểm, khảo sát thực địa và đo đạc chính xác",
+
+            "Sách vở và giáo lý tôn giáo",
+
+            "Kinh nghiệm truyền miệng"
+        ],
+
+        correct:1
+    },
+
+    {
+        question:
+            "Một đặc điểm nổi bật của khoa học thế kỷ XIX là:",
+
+        options:[
+            "Chỉ dựa vào tư duy triết học",
+
+            "Hạn chế sử dụng thực nghiệm",
+
+            "Xây dựng hệ thống phòng thí nghiệm và thiết bị đo đạc ngày càng tinh vi",
+
+            "Phụ thuộc chủ yếu vào giáo lý tôn giáo"
+        ],
+
+        correct:2
+    },
+
+    {
+        question:
+            "Ai là nhà khoa học tiêu biểu gắn với hiện tượng cảm ứng điện từ?",
+
+        options:[
+            "Charles Darwin",
+            "Michael Faraday",
+            "Dmitri Mendeleev",
+            "James Watt"
+        ],
+
+        correct:1
+    },
+
+    {
+        question:
+            "Năm 1869, Dmitri Mendeleev có đóng góp nổi bật nào?",
+
+        options:[
+            "Đề xuất học thuyết tiến hóa",
+
+            "Phát hiện hiện tượng cảm ứng điện từ",
+
+            "Xây dựng bảng hệ thống tuần hoàn các nguyên tố hóa học",
+
+            "Phát minh động cơ đốt trong"
+        ],
+
+        correct:2
+    },
+
+    {
+        question:
+            "Bước ngoặt của thế kỷ XIX thể hiện rõ nhất ở sự chuyển biến nào?",
+
+        options:[
+            "Từ thực nghiệm sang suy đoán",
+
+            "Từ khoa học chuyên môn hóa sang tri thức tổng hợp",
+
+            "Từ tri thức phân tán sang nghiên cứu chuyên môn hóa, thực nghiệm có hệ thống và đo đạc chính xác",
+
+            "Từ khoa học sang tôn giáo"
+        ],
+
+        correct:2
+    },
+
+    {
+        question:
+            "Vì sao thế kỷ XIX được xem là một bước ngoặt quan trọng của khoa học?",
+
+        options:[
+            "Vì khoa học quay lại dựa chủ yếu vào kinh nghiệm",
+
+            "Vì khoa học ngày càng gắn chặt với sản xuất và công nghệ",
+
+            "Vì khoa học không còn cần thực nghiệm",
+
+            "Vì các ngành khoa học bị hợp nhất thành một ngành duy nhất"
+        ],
+
+        correct:1
+    }
+
+];
+
+
+let currentQuestionIndex = 0;
+let rewardCount = 0;
+let transitioning = false;
+
+
+const questionCounter =
+document.getElementById("question-counter");
+
+const questionText =
+document.getElementById("question-text");
+
+const optionsList =
+document.getElementById("options-list");
+
+const rewardCountEl =
+document.getElementById("reward-count");
+
+const rewardPopup =
+document.getElementById("reward-popup");
+
+const progress =
+document.getElementById("progress");
+
+const quizBox =
+document.getElementById("quiz-box");
+
+const resultScreen =
+document.getElementById("result-screen");
+
+
+function loadQuestion(){
+
+    transitioning = false;
+
+    rewardPopup.classList.remove(
+        "show"
+    );
+
+
+    const data =
+    quizData[currentQuestionIndex];
+
+
+    questionCounter.textContent =
+    `Câu hỏi ${currentQuestionIndex + 1} / ${quizData.length}`;
+
+
+    questionText.textContent =
+    data.question;
+
+
+    rewardCountEl.textContent =
+    rewardCount;
+
+
+    optionsList.innerHTML = "";
+
+
+    data.options.forEach(
+        (text,index)=>{
+
+            const button =
+            document.createElement(
+                "button"
+            );
+
+
+            button.className =
+            "option-btn";
+
+
+            button.textContent =
+            text;
+
+
+            button.addEventListener(
+                "click",
+                ()=>selectOption(
+                    index,
+                    button
+                )
+            );
+
+
+            optionsList.appendChild(
+                button
+            );
+
+        }
+    );
+
+
+    renderProgress();
+
+}
+
+
+function selectOption(
+    selectedIndex,
+    button
+){
+
+    if(transitioning){
+        return;
+    }
+
+
+    const data =
+    quizData[currentQuestionIndex];
+
+
+    if(
+        selectedIndex ===
+        data.correct
+    ){
+
+        transitioning = true;
+
+        rewardCount++;
+
+        rewardCountEl.textContent =
+        rewardCount;
+
+
+        document
+        .querySelectorAll(
+            ".option-btn"
+        )
+        .forEach(
+            item=>{
+                item.disabled = true;
+            }
+        );
+
+
+        button.classList.add(
+            "correct"
+        );
+
+
+        /* PNG 2A */
+
+        const check =
+        document.createElement(
+            "img"
+        );
+
+        check.src =
+        ASSETS.correctCheck;
+
+        check.className =
+        "correct-check";
+
+        check.alt = "";
+
+
+        /* PNG 2B */
+
+        const kitkat =
+        document.createElement(
+            "img"
+        );
+
+        kitkat.src =
+        ASSETS.correctKitkat;
+
+        kitkat.className =
+        "correct-kitkat";
+
+        kitkat.alt = "";
+
+
+        button.appendChild(
+            check
+        );
+
+        button.appendChild(
+            kitkat
+        );
+
+
+        rewardPopup.classList.add(
+            "show"
+        );
+
+
+        renderProgress(true);
+
+
+        confetti({
+
+            particleCount:55,
+
+            spread:65,
+
+            startVelocity:30,
+
+            origin:{
+                y:.55
+            }
+
+        });
+
+
+        setTimeout(()=>{
+
+            currentQuestionIndex++;
+
+
+            if(
+                currentQuestionIndex <
+                quizData.length
+            ){
+
+                loadQuestion();
+
+            }
+
+            else{
+
+                showResult();
+
+            }
+
+        },1300);
+
+    }
+
+    else{
+
+        button.classList.remove(
+            "wrong"
+        );
+
+
+        void button.offsetWidth;
+
+
+        button.classList.add(
+            "wrong"
+        );
+
+
+        setTimeout(()=>{
+
+            button.classList.remove(
+                "wrong"
+            );
+
+        },400);
+
+    }
+
+}
+
+
+function renderProgress(
+    justAnswered = false
+){
+
+    progress.innerHTML = "";
+
+
+    for(
+        let i=0;
+        i<quizData.length;
+        i++
+    ){
+
+        const item =
+        document.createElement(
+            "div"
+        );
+
+        item.className =
+        "progress-item";
+
+
+        const circle =
+        document.createElement(
+            "div"
+        );
+
+        circle.className =
+        "progress-circle";
+
+
+        const number =
+        document.createElement(
+            "span"
+        );
+
+        number.textContent =
+        i + 1;
+
+
+        if(
+            i < currentQuestionIndex
+        ){
+
+            item.classList.add(
+                "done"
+            );
+
+            circle.textContent =
+            "✓";
+
+        }
+
+        else if(
+            justAnswered &&
+            i === currentQuestionIndex
+        ){
+
+            item.classList.add(
+                "done"
+            );
+
+            circle.textContent =
+            "✓";
+
+        }
+
+        else if(
+            i === currentQuestionIndex
+        ){
+
+            item.classList.add(
+                "current"
+            );
+
+        }
+
+
+        item.appendChild(
+            circle
+        );
+
+        item.appendChild(
+            number
+        );
+
+        progress.appendChild(
+            item
+        );
+
+    }
+
+}
+
+
+function showResult(){
+
+    quizBox.style.display =
+    "none";
+
+    resultScreen.style.display =
+    "block";
+
+
+    confetti({
+
+        particleCount:150,
+
+        spread:100,
+
+        startVelocity:38,
+
+        origin:{
+            y:.5
+        }
+
+    });
+
+}
+
+
+function restartGame(){
+
+    currentQuestionIndex = 0;
+
+    rewardCount = 0;
+
+    transitioning = false;
+
+
+    resultScreen.style.display =
+    "none";
+
+    quizBox.style.display =
+    "block";
+
+
+    loadQuestion();
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+
+}
+
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
