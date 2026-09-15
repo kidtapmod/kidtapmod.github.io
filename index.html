@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Truy tìm KitKat</title>
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+:root{
+    --green-dark:#07533f;
+    --green:#087357;
+    --green-light:#17916d;
+    --cream:#fffaf0;
+    --answer:#f3f7f1;
+    --answer-border:#a9bfb5;
+    --red:#d71920;
+}
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+html,body{
+    width:100%;
+    min-height:100%;
+}
+
+body{
+    font-family:"Segoe UI",Arial,sans-serif;
+    background:
+        radial-gradient(circle at 50% 20%,#087357 0%,#07533f 55%,#043d30 100%);
+    color:#073f32;
+}
+
+/* =========================
+   TOÀN BỘ GAME
+========================= */
+
+.game{
+    width:min(760px,100%);
+    margin:0 auto;
+    position:relative;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.hero{
+    width:100%;
+    display:block;
+}
+
+.hero img{
+    display:block;
+    width:100%;
+    height:auto;
+}
+
+/* =========================
+   KHUNG CHÍNH
+========================= */
+
+.quiz-card{
+    position:relative;
+
+    width:calc(100% - 32px);
+    margin:-2px auto 20px;
+
+    background:
+        radial-gradient(circle at 40% 15%,#fffef8,#fff8e9 75%);
+
+    border-radius:25px;
+
+    padding:
+        25px
+        48px
+        135px;
+
+    min-height:590px;
+
+    overflow:hidden;
+}
+
+/* viền đứt phía trong */
+
+.quiz-card::before{
+    content:"";
+    position:absolute;
+    inset:14px;
+
+    border:
+        2px
+        dashed
+        rgba(7,83,63,.16);
+
+    border-radius:20px;
+
+    pointer-events:none;
+    z-index:1;
+}
+
+/* nội dung phải nằm trên trang trí */
+
+.quiz-content{
+    position:relative;
+    z-index:5;
+}
+
+/* =========================
+   TOP BAR
+========================= */
+
+.top-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    margin-bottom:20px;
+}
+
+.question-badge{
+    display:flex;
+    align-items:center;
+    gap:9px;
+
+    background:linear-gradient(
+        135deg,
+        #07533f,
+        #0c8462
+    );
+
+    color:white;
+
+    padding:11px 18px;
+    border-radius:999px;
+
+    font-size:15px;
+    font-weight:800;
+
+    box-shadow:
+        0 7px 15px
+        rgba(7,83,63,.15);
+}
+
+.question-icon{
+    width:38px;
+    height:30px;
+    object-fit:contain;
+}
+
+/* KITKAT COUNTER */
+
+.reward-counter{
+    display:flex;
+    align-items:center;
+    gap:7px;
+
+    padding:9px 13px;
+
+    background:#fffaf0;
+
+    border:
+        2px solid
+        rgba(112,99,63,.15);
+
+    border-radius:999px;
+
+    font-weight:800;
+    color:#c72026;
+}
+
+.reward-counter img{
+    width:22px;
+    height:22px;
+    object-fit:contain;
+}
+
+/* =========================
+   CÂU HỎI
+========================= */
+
+.question{
+    text-align:center;
+
+    max-width:620px;
+    margin:
+        0 auto
+        20px;
+
+    color:#064737;
+
+    font-size:24px;
+    line-height:1.3;
+    font-weight:800;
+}
+
+/* =========================
+   ĐÁP ÁN
+========================= */
+
+.options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.option-btn{
+    width:100%;
+
+    min-height:59px;
+
+    display:flex;
+    align-items:center;
+
+    border:
+        2px solid
+        var(--answer-border);
+
+    border-radius:18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f9fbf7,
+            #eef4ef
+        );
+
+    padding:10px 17px;
+
+    color:#164a3d;
+
+    font-size:16px;
+    line-height:1.3;
+
+    text-align:left;
+
+    cursor:pointer;
+
+    transition:
+        transform .18s ease,
+        border-color .18s ease,
+        background .18s ease,
+        box-shadow .18s ease;
+
+    position:relative;
+}
+
+.option-btn:hover:not(:disabled){
+    transform:translateY(-1px);
+
+    border-color:#228466;
+
+    box-shadow:
+        0 5px 12px
+        rgba(7,83,63,.08);
+}
+
+/* A B C D */
+
+.option-letter{
+    width:34px;
+    height:34px;
+
+    flex:0 0 34px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    margin-right:13px;
+
+    border:
+        2px solid
+        #91ada2;
+
+    border-radius:50%;
+
+    background:white;
+
+    color:#07563f;
+
+    font-size:15px;
+    font-weight:900;
+}
+
+.option-text{
+    flex:1;
+}
+
+/* =========================
+   ĐÁP ÁN ĐÚNG
+========================= */
+
+.option-btn.correct{
+    background:
+        linear-gradient(
+            135deg,
+            #075b43,
+            #087759
+        );
+
+    border-color:#075b43;
+
+    color:white;
+
+    padding-right:82px;
+
+    box-shadow:
+        inset 0 0 0 3px #e8fff6;
+}
+
+/* A/B/C/D chuyển thành ✓ */
+
+.option-btn.correct .option-letter{
+    font-size:0;
+
+    background:white;
+    border-color:white;
+}
+
+.option-btn.correct .option-letter::after{
+    content:"✓";
+
+    font-size:23px;
+    font-weight:900;
+
+    color:#0b795a;
+}
+
+/* PNG KITKAT 2B */
+
+.correct-kitkat{
+    position:absolute;
+
+    right:12px;
+    top:50%;
+
+    transform:
+        translateY(-50%)
+        rotate(-7deg);
+
+    width:65px;
+    max-height:52px;
+
+    object-fit:contain;
+
+    pointer-events:none;
+}
+
+/* =========================
+   SAI
+========================= */
+
+@keyframes shake{
+    0%,100%{transform:translateX(0);}
+    20%{transform:translateX(-7px);}
+    40%{transform:translateX(7px);}
+    60%{transform:translateX(-5px);}
+    80%{transform:translateX(5px);}
+}
+
+.option-btn.wrong{
+    animation:shake .35s ease;
+
+    border-color:#d75252;
+
+    background:#fff0ed;
+}
+
+/* =========================
+   PHẦN THƯỞNG
+========================= */
+
+.reward-popup{
+    display:none;
+
+    width:min(390px,80%);
+
+    margin:
+        17px auto
+        5px;
+
+    animation:
+        rewardAppear
+        .4s ease;
+}
+
+.reward-popup.show{
+    display:block;
+}
+
+.reward-popup img{
+    width:100%;
+    display:block;
+}
+
+@keyframes rewardAppear{
+    from{
+        opacity:0;
+        transform:
+            translateY(10px)
+            scale(.92);
+    }
+
+    to{
+        opacity:1;
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+/* =========================
+   TIẾN ĐỘ
+========================= */
+
+.progress{
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
+
+    gap:8px;
+
+    margin-top:17px;
+}
+
+.progress-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+    gap:3px;
+}
+
+.progress-circle{
+    width:29px;
+    height:29px;
+
+    border-radius:50%;
+
+    border:
+        3px solid
+        #a9bbb3;
+
+    background:#e6e9e6;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    color:white;
+
+    font-size:15px;
+    font-weight:bold;
+}
+
+.progress-item.active .progress-circle{
+    background:white;
+    border-color:#148365;
+}
+
+.progress-item.done .progress-circle{
+    background:#168967;
+    border-color:#168967;
+}
+
+.progress-item.done .progress-circle::after{
+    content:"✓";
+}
+
+.progress-number{
+    font-size:12px;
+    font-weight:700;
+    color:#315e51;
+}
+
+/* =========================
+   TRANG TRÍ DƯỚI
+========================= */
+
+.decor-left,
+.decor-right,
+.mascot{
+    position:absolute;
+
+    z-index:3;
+
+    pointer-events:none;
+    user-select:none;
+}
+
+/* PNG 4 */
+
+.decor-left{
+    left:-9px;
+    bottom:-8px;
+
+    width:245px;
+}
+
+/* PNG 5 */
+
+.decor-right{
+    right:-11px;
+    bottom:-9px;
+
+    width:245px;
+}
+
+/* PNG 6
+   nhân vật đứng riêng,
+   KHÔNG gắn vào lá
+*/
+
+.mascot{
+    right:25px;
+    bottom:24px;
+
+    width:145px;
+
+    z-index:4;
+
+    filter:
+        drop-shadow(
+            0 5px 4px
+            rgba(0,0,0,.08)
+        );
+}
+
+/* =========================
+   RESULT
+========================= */
+
+.result{
+    display:none;
+
+    position:relative;
+    z-index:6;
+
+    text-align:center;
+
+    padding:
+        65px 20px
+        120px;
+}
+
+.result h1{
+    color:#07533f;
+
+    font-size:38px;
+
+    margin-bottom:15px;
+}
+
+.result p{
+    font-size:21px;
+    line-height:1.5;
+
+    margin-bottom:25px;
+}
+
+.restart{
+    border:0;
+
+    background:#075b43;
+
+    color:white;
+
+    padding:14px 38px;
+
+    border-radius:15px;
+
+    font-size:18px;
+    font-weight:700;
+
+    cursor:pointer;
+}
+
+/* =========================
+   LAPTOP
+   CỐ GẮNG HIỆN TRỌN GAME
+========================= */
+
+@media
+(min-width:800px)
+and (min-height:650px){
+
+    .game{
+        width:690px;
+    }
+
+    .quiz-card{
+        min-height:0;
+
+        padding:
+            20px
+            42px
+            105px;
+    }
+
+    .top-row{
+        margin-bottom:15px;
+    }
+
+    .question{
+        font-size:21px;
+        margin-bottom:15px;
+    }
+
+    .options{
+        gap:8px;
+    }
+
+    .option-btn{
+        min-height:53px;
+
+        padding:
+            8px
+            15px;
+
+        font-size:14.5px;
+
+        border-radius:15px;
+    }
+
+    .option-letter{
+        width:30px;
+        height:30px;
+
+        flex-basis:30px;
+
+        font-size:13px;
+    }
+
+    .progress{
+        margin-top:12px;
+    }
+
+    .progress-circle{
+        width:25px;
+        height:25px;
+    }
+
+    .reward-popup{
+        width:330px;
+
+        margin-top:10px;
+    }
+
+    .decor-left,
+    .decor-right{
+        width:205px;
+    }
+
+    .mascot{
+        width:132px;
+
+        right:23px;
+        bottom:18px;
+    }
+}
+
+/* laptop thấp */
+
+@media
+(min-width:800px)
+and (max-height:720px){
+
+    .game{
+        width:650px;
+    }
+
+    .quiz-card{
+        padding:
+            16px
+            38px
+            86px;
+    }
+
+    .question-badge{
+        padding:8px 14px;
+        font-size:13px;
+    }
+
+    .question-icon{
+        width:31px;
+    }
+
+    .reward-counter{
+        padding:7px 11px;
+        font-size:13px;
+    }
+
+    .top-row{
+        margin-bottom:11px;
+    }
+
+    .question{
+        font-size:19px;
+        margin-bottom:11px;
+    }
+
+    .options{
+        gap:7px;
+    }
+
+    .option-btn{
+        min-height:47px;
+
+        font-size:13.5px;
+
+        padding:
+            7px
+            13px;
+    }
+
+    .option-letter{
+        width:27px;
+        height:27px;
+
+        flex-basis:27px;
+
+        margin-right:10px;
+    }
+
+    .progress{
+        margin-top:8px;
+    }
+
+    .progress-circle{
+        width:23px;
+        height:23px;
+
+        border-width:2px;
+    }
+
+    .progress-number{
+        font-size:10px;
+    }
+
+    .decor-left,
+    .decor-right{
+        width:175px;
+    }
+
+    .mascot{
+        width:115px;
+
+        right:20px;
+        bottom:14px;
+    }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:600px){
+
+    body{
+        background:#07533f;
+    }
+
+    .game{
+        width:100%;
+    }
+
+    .quiz-card{
+        width:100%;
+
+        margin:0;
+
+        border-radius:
+            24px
+            24px
+            0
+            0;
+
+        padding:
+            25px
+            27px
+            150px;
+
+        min-height:
+            calc(100vh - 155px);
+    }
+
+    .quiz-card::before{
+        inset:14px 19px;
+    }
+
+    .question-badge{
+        padding:
+            11px
+            15px;
+
+        font-size:14px;
+    }
+
+    .question-icon{
+        width:34px;
+    }
+
+    .reward-counter{
+        font-size:13px;
+    }
+
+    .question{
+        font-size:23px;
+
+        padding:0 10px;
+
+        margin:
+            25px auto
+            28px;
+    }
+
+    .options{
+        gap:13px;
+    }
+
+    .option-btn{
+        min-height:75px;
+
+        font-size:16px;
+
+        padding:
+            12px
+            17px;
+
+        border-radius:18px;
+    }
+
+    .option-letter{
+        width:34px;
+        height:34px;
+
+        flex-basis:34px;
+    }
+
+    .option-btn.correct{
+        padding-right:76px;
+    }
+
+    .correct-kitkat{
+        width:59px;
+        right:10px;
+    }
+
+    .reward-popup{
+        width:88%;
+
+        margin-top:20px;
+    }
+
+    .progress{
+        margin-top:20px;
+    }
+
+    .progress-circle{
+        width:30px;
+        height:30px;
+    }
+
+    /* Lá lớn nhưng không bị cắt */
+
+    .decor-left{
+        width:215px;
+
+        left:-13px;
+        bottom:-5px;
+    }
+
+    .decor-right{
+        width:215px;
+
+        right:-13px;
+        bottom:-5px;
+    }
+
+    /* mascot nổi riêng trên lá phải */
+
+    .mascot{
+        width:145px;
+
+        right:18px;
+        bottom:29px;
+    }
+}
+
+/* điện thoại nhỏ */
+
+@media(max-width:390px){
+
+    .quiz-card{
+        padding-left:21px;
+        padding-right:21px;
+    }
+
+    .question{
+        font-size:21px;
+    }
+
+    .option-btn{
+        font-size:14.5px;
+    }
+
+    .option-letter{
+        width:31px;
+        height:31px;
+
+        flex-basis:31px;
+
+        margin-right:10px;
+    }
+
+    .decor-left,
+    .decor-right{
+        width:190px;
+    }
+
+    .mascot{
+        width:128px;
+
+        right:15px;
+        bottom:26px;
+    }
+}
+
+</style>
+</head>
+
+<body>
+
+<main class="game">
+
+    <!-- HEADER ẢNH BẠN ĐÃ GỬI -->
+    <header class="hero">
+        <img
+        src="https://i.ibb.co/35BbmLqx/F855-EBE5-79-E7-4-BF3-9-B42-701-DBF111-AF8.jpg"
+        alt="Truy tìm KitKat">
+    </header>
+
+
+    <section class="quiz-card">
+
+        <!-- =================
+             QUIZ
+        ================== -->
+
+        <div id="quizContent" class="quiz-content">
+
+            <div class="top-row">
+
+                <div class="question-badge">
+
+                    <!-- ẢNH 1 -->
+                    <img
+                    src="https://i.ibb.co/cStTPwSL/1.png"
+                    class="question-icon"
+                    alt="Chocolate">
+
+                    <span id="questionCounter">
+                        Câu hỏi 1 / 6
+                    </span>
+
+                </div>
+
+
+                <div class="reward-counter">
+
+                    <!-- dùng ảnh KitKat -->
+                    <img
+                    src="https://i.ibb.co/rG7JK6sq/IMG-2568.png"
+                    alt="KitKat">
+
+                    <span id="rewardCounter">
+                        0 / 6
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <h2
+            id="questionText"
+            class="question">
+            </h2>
+
+
+            <div
+            id="optionsList"
+            class="options">
+            </div>
+
+
+            <!-- ẢNH 3 -->
+            <div
+            id="rewardPopup"
+            class="reward-popup">
+
+                <img
+                src="https://i.ibb.co/spmdhq6h/3.png"
+                alt="Bạn nhận được 1 KitKat">
+
+            </div>
+
+
+            <div
+            id="progress"
+            class="progress">
+            </div>
+
+        </div>
+
+
+        <!-- =================
+             RESULT
+        ================== -->
+
+        <div
+        id="result"
+        class="result">
+
+            <h1>🎉 Hoàn thành rồi!</h1>
+
+            <p>
+                Bạn đã thu thập được
+                <strong>6 / 6 KitKat!</strong>
+            </p>
+
+            <button
+            class="restart"
+            onclick="restartGame()">
+
+                Chơi lại
+
+            </button>
+
+        </div>
+
+
+        <!-- =================
+             DECORATION
+        ================== -->
+
+        <!-- ẢNH 4 - LÁ TRÁI -->
+        <img
+        src="https://i.ibb.co/v4JdkbDY/4.png"
+        class="decor-left"
+        alt="">
+
+
+        <!-- ẢNH 5 - LÁ PHẢI -->
+        <img
+        src="https://i.ibb.co/Vp22VRqY/5.png"
+        class="decor-right"
+        alt="">
+
+
+        <!-- ẢNH 6 - MASCOT RIÊNG -->
+        <img
+        src="https://i.ibb.co/n83B3nsn/6.png"
+        class="mascot"
+        alt="Mascot">
+
+    </section>
+
+</main>
+
+
+<script>
+
+/* ==========================================
+   DỮ LIỆU 6 CÂU HỎI
+========================================== */
+
+const quizData = [
+
+{
+    question:
+    "Tri thức khoa học ở thế kỷ XIX được tích lũy chủ yếu thông qua phương pháp nào?",
+
+    options:[
+        "Suy luận triết học thuần túy",
+
+        "Quan sát thực nghiệm, thám hiểm, khảo sát thực địa và đo đạc chính xác",
+
+        "Sách vở và giáo lý tôn giáo",
+
+        "Kinh nghiệm truyền miệng"
+    ],
+
+    correct:1
+},
+
+{
+    question:
+    "Một đặc điểm nổi bật của khoa học thế kỷ XIX là:",
+
+    options:[
+        "Chỉ dựa vào tư duy triết học",
+
+        "Hạn chế sử dụng thực nghiệm",
+
+        "Xây dựng hệ thống phòng thí nghiệm và thiết bị đo đạc ngày càng tinh vi",
+
+        "Phụ thuộc chủ yếu vào giáo lý tôn giáo"
+    ],
+
+    correct:2
+},
+
+{
+    question:
+    "Ai là nhà khoa học tiêu biểu gắn với hiện tượng cảm ứng điện từ?",
+
+    options:[
+        "Charles Darwin",
+
+        "Michael Faraday",
+
+        "Dmitri Mendeleev",
+
+        "James Watt"
+    ],
+
+    correct:1
+},
+
+{
+    question:
+    "Năm 1869, Dmitri Mendeleev có đóng góp nổi bật nào?",
+
+    options:[
+        "Đề xuất học thuyết tiến hóa",
+
+        "Phát hiện hiện tượng cảm ứng điện từ",
+
+        "Xây dựng bảng hệ thống tuần hoàn các nguyên tố hóa học",
+
+        "Phát minh động cơ đốt trong"
+    ],
+
+    correct:2
+},
+
+{
+    question:
+    "Bước ngoặt của thế kỷ XIX thể hiện rõ nhất ở sự chuyển biến nào?",
+
+    options:[
+        "Từ thực nghiệm sang suy đoán",
+
+        "Từ khoa học chuyên môn hóa sang tri thức tổng hợp",
+
+        "Từ tri thức phân tán sang nghiên cứu chuyên môn hóa, thực nghiệm có hệ thống và đo đạc chính xác",
+
+        "Từ khoa học sang tôn giáo"
+    ],
+
+    correct:2
+},
+
+{
+    question:
+    "Vì sao thế kỷ XIX được xem là một bước ngoặt quan trọng của khoa học?",
+
+    options:[
+        "Vì khoa học quay lại dựa chủ yếu vào kinh nghiệm",
+
+        "Vì khoa học ngày càng gắn chặt với sản xuất và công nghệ",
+
+        "Vì khoa học không còn cần thực nghiệm",
+
+        "Vì các ngành khoa học bị hợp nhất thành một ngành duy nhất"
+    ],
+
+    correct:1
+}
+
+];
+
+
+/* ==========================================
+   PNG
+========================================== */
+
+const IMAGES = {
+
+    /* PNG 2A
+       dấu / trang trí đáp án đúng
+    */
+    correctMark:
+    "https://i.ibb.co/1t435h2J/5-B1-DCE9-A-8-F91-4-DDD-B223-AB3827-F1-F74-D.png",
+
+    /* PNG 2B
+       KitKat trên đáp án đúng
+    */
+    correctKitkat:
+    "https://i.ibb.co/qYWgXNjg/IMG-2587.png"
+};
+
+
+/* ==========================================
+   STATE
+========================================== */
+
+let currentQuestion = 0;
+
+let kitkatCount = 0;
+
+let transitioning = false;
+
+
+/* ==========================================
+   ELEMENTS
+========================================== */
+
+const questionCounter =
+document.getElementById(
+    "questionCounter"
+);
+
+const rewardCounter =
+document.getElementById(
+    "rewardCounter"
+);
+
+const questionText =
+document.getElementById(
+    "questionText"
+);
+
+const optionsList =
+document.getElementById(
+    "optionsList"
+);
+
+const rewardPopup =
+document.getElementById(
+    "rewardPopup"
+);
+
+const progress =
+document.getElementById(
+    "progress"
+);
+
+const quizContent =
+document.getElementById(
+    "quizContent"
+);
+
+const result =
+document.getElementById(
+    "result"
+);
+
+
+/* ==========================================
+   LOAD QUESTION
+========================================== */
+
+function loadQuestion(){
+
+    transitioning=false;
+
+    rewardPopup.classList.remove(
+        "show"
+    );
+
+    const data =
+    quizData[currentQuestion];
+
+
+    questionCounter.textContent =
+    `Câu hỏi ${currentQuestion+1} / ${quizData.length}`;
+
+
+    rewardCounter.textContent =
+    `${kitkatCount} / ${quizData.length}`;
+
+
+    questionText.textContent =
+    data.question;
+
+
+    optionsList.innerHTML="";
+
+
+    const letters=[
+        "A",
+        "B",
+        "C",
+        "D"
+    ];
+
+
+    data.options.forEach(
+        (text,index)=>{
+
+            const button =
+            document.createElement(
+                "button"
+            );
+
+            button.className =
+            "option-btn";
+
+
+            /* A B C D */
+
+            const letter =
+            document.createElement(
+                "span"
+            );
+
+            letter.className =
+            "option-letter";
+
+            letter.textContent =
+            letters[index];
+
+
+            /* nội dung */
+
+            const answerText =
+            document.createElement(
+                "span"
+            );
+
+            answerText.className =
+            "option-text";
+
+            answerText.textContent =
+            text;
+
+
+            button.appendChild(
+                letter
+            );
+
+            button.appendChild(
+                answerText
+            );
+
+
+            button.addEventListener(
+                "click",
+                ()=>selectOption(
+                    index,
+                    button
+                )
+            );
+
+
+            optionsList.appendChild(
+                button
+            );
+
+        }
+    );
+
+
+    renderProgress();
+}
+
+
+/* ==========================================
+   CHỌN ĐÁP ÁN
+========================================== */
+
+function selectOption(
+    selectedIndex,
+    selectedButton
+){
+
+    if(transitioning){
+        return;
+    }
+
+
+    const data =
+    quizData[currentQuestion];
+
+
+    /* =====================
+       ĐÚNG
+    ===================== */
+
+    if(
+        selectedIndex ===
+        data.correct
+    ){
+
+        transitioning=true;
+
+
+        const buttons =
+        optionsList.querySelectorAll(
+            ".option-btn"
+        );
+
+
+        buttons.forEach(
+            btn=>{
+                btn.disabled=true;
+            }
+        );
+
+
+        selectedButton.classList.add(
+            "correct"
+        );
+
+
+        /* PNG KITKAT 2B */
+
+        const kitkat =
+        document.createElement(
+            "img"
+        );
+
+        kitkat.src =
+        IMAGES.correctKitkat;
+
+        kitkat.className =
+        "correct-kitkat";
+
+        kitkat.alt="KitKat";
+
+
+        selectedButton.appendChild(
+            kitkat
+        );
+
+
+        kitkatCount++;
+
+        rewardCounter.textContent =
+        `${kitkatCount} / ${quizData.length}`;
+
+
+        rewardPopup.classList.add(
+            "show"
+        );
+
+
+        renderProgress(
+            currentQuestion
+        );
+
+
+        /* CONFETTI */
+
+        confetti({
+
+            particleCount:45,
+
+            spread:55,
+
+            startVelocity:25,
+
+            origin:{
+                y:.55
+            }
+
+        });
+
+
+        setTimeout(()=>{
+
+            currentQuestion++;
+
+
+            if(
+                currentQuestion <
+                quizData.length
+            ){
+
+                loadQuestion();
+
+            }
+
+            else{
+
+                showResult();
+
+            }
+
+        },1100);
+
+    }
+
+
+    /* =====================
+       SAI
+    ===================== */
+
+    else{
+
+        selectedButton.classList.add(
+            "wrong"
+        );
+
+
+        setTimeout(()=>{
+
+            selectedButton.classList.remove(
+                "wrong"
+            );
+
+        },380);
+
+    }
+
+}
+
+
+/* ==========================================
+   PROGRESS
+========================================== */
+
+function renderProgress(
+    justCompleted=-1
+){
+
+    progress.innerHTML="";
+
+
+    quizData.forEach(
+        (_,index)=>{
+
+            const item =
+            document.createElement(
+                "div"
+            );
+
+            item.className =
+            "progress-item";
+
+
+            if(
+                index <
+                currentQuestion ||
+                index === justCompleted
+            ){
+
+                item.classList.add(
+                    "done"
+                );
+
+            }
+
+            else if(
+                index ===
+                currentQuestion
+            ){
+
+                item.classList.add(
+                    "active"
+                );
+
+            }
+
+
+            const circle =
+            document.createElement(
+                "div"
+            );
+
+            circle.className =
+            "progress-circle";
+
+
+            const number =
+            document.createElement(
+                "div"
+            );
+
+            number.className =
+            "progress-number";
+
+            number.textContent =
+            index+1;
+
+
+            item.appendChild(
+                circle
+            );
+
+            item.appendChild(
+                number
+            );
+
+
+            progress.appendChild(
+                item
+            );
+
+        }
+    );
+
+}
+
+
+/* ==========================================
+   KẾT QUẢ
+========================================== */
+
+function showResult(){
+
+    quizContent.style.display=
+    "none";
+
+    result.style.display=
+    "block";
+
+
+    confetti({
+
+        particleCount:130,
+
+        spread:90,
+
+        startVelocity:35,
+
+        origin:{
+            y:.5
+        }
+
+    });
+
+}
+
+
+/* ==========================================
+   CHƠI LẠI
+========================================== */
+
+function restartGame(){
+
+    currentQuestion=0;
+
+    kitkatCount=0;
+
+    transitioning=false;
+
+
+    result.style.display=
+    "none";
+
+    quizContent.style.display=
+    "block";
+
+
+    loadQuestion();
+
+}
+
+
+/* ==========================================
+   START
+========================================== */
+
+loadQuestion();
+
+</script>
+
+</body>
+</html>
