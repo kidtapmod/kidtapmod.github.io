@@ -1,15 +1,15 @@
 {
-  "sha256": "02efa3dc1340250d0d927ca09fecb07c7a18b75c1ed2a17ab7c35ec64777e64d",
+  "sha256": "763a56d4415cbfbd2c50a5155e699a67235f3877ec4045506036e66a566eb7ff",
   "parts": [
     {
       "name": "app.part01",
       "size": 18874368,
-      "sha256": "45634d3170249505e45daa452dd8f3f1030a1896e2fadef6092313320dfb4117"
+      "sha256": "74239b98a5ef89f637ab6b1614f041354df401047b1fdd3563684e9ea0d381f6"
     },
     {
       "name": "app.part02",
-      "size": 15348107,
-      "sha256": "37dc8881859effdb4a3a3b5f81a47445597ad2057a0f3244f637b4e8e4abdde4"
+      "size": 15973435,
+      "sha256": "e99fc569d6bbe234f7d18e1f2309291b6a4878a0cb2b129af9f6777cfa8bdb59"
     }
   ]
 }
