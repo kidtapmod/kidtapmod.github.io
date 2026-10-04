@@ -7,3 +7,10 @@ Tải đủ 9 file lên thay bản cũ. Start Command: python start_web.py. Gi�
 Deploy xong tải lại trang và tạo ZIP mới, không dùng ZIP lịch sử cũ.
 
 Chi tiết: app/KMM_KET_QUA_VA_HUONG_DAN.txt sau khi giải nén nguồn. Ảnh: app/KMM_PREVIEW.
+
+BẢN OUT + THÔNG BÁO KONGMEMOD
+Thay đủ 9 file trong thư mục gốc; không trộn hai phần app và bundle.json với bản khác.
+Triển khai lại Railway, sau đó mở https://web-production-b2d7d.up.railway.app/api/game-notice.txt trên Safari để kiểm tra chữ Kongmemod.
+Tạo và tải file mod MỚI rồi cài lại; file mod đã tải ở bản trước không tự đổi nguồn thông báo.
+Popup tải cấu hình qua mạng. Thông báo đã đổi tên/link/TikTok, nhưng chưa thử thực tế trong game và chưa xác minh lỗi mất mod sau khởi động lại.
+Hướng dẫn chi tiết nằm trong app/KONGMEMOD_OUT_HUONG_DAN.txt sau khi giải nén mã nguồn.
