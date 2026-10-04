@@ -8,9 +8,34 @@ Deploy xong tải lại trang và tạo ZIP mới, không dùng ZIP lịch sử 
 
 Chi tiết: app/KMM_KET_QUA_VA_HUONG_DAN.txt sau khi giải nén nguồn. Ảnh: app/KMM_PREVIEW.
 
-BẢN OUT + THÔNG BÁO KONGMEMOD
-Thay đủ 9 file trong thư mục gốc; không trộn hai phần app và bundle.json với bản khác.
-Triển khai lại Railway, sau đó mở https://web-production-b2d7d.up.railway.app/api/game-notice.txt trên Safari để kiểm tra chữ Kongmemod.
-Tạo và tải file mod MỚI rồi cài lại; file mod đã tải ở bản trước không tự đổi nguồn thông báo.
-Popup tải cấu hình qua mạng. Thông báo đã đổi tên/link/TikTok, nhưng chưa thử thực tế trong game và chưa xác minh lỗi mất mod sau khởi động lại.
-Hướng dẫn chi tiết nằm trong app/KONGMEMOD_OUT_HUONG_DAN.txt sau khi giải nén mã nguồn.
+KONGMEMOD — TẠM NGỪNG GÓI LUA ĐỂ KHOANH VÙNG LỖI VĂNG GAME
+
+Triệu chứng người dùng báo: vào sảnh chỉ hiện một phần giao diện rồi game tự thoát.
+Chưa có crash log, chưa tái hiện trên thiết bị nên chưa xác định được nguyên nhân.
+
+Phát hiện đã kiểm tra:
+- Bản trước thay toàn bộ KernelLua.pkg.bytes và StableSystems_3.pkg.bytes bằng gói OUT.
+- Gói có mã khởi chạy trong sảnh và tải thông báo qua mạng.
+- Endpoint thông báo đang trả HTTP 200, UTF-8 và đúng nội dung Kongmemod. Điều này không chứng minh mã trong game tương thích.
+- Kiểm tra SHA-256, CRC hoặc dựng lại payload không thay thế được kiểm tra chạy trong game.
+
+Thay đổi bản này:
+- Tạm ngừng tích hợp OUT, cả hai gói Lua đều không có trong ZIP mod tạo mới.
+- Cả bản Lua đi kèm mã nguồn cũng không được ghi đè lên tài nguyên game.
+- Giữ luồng chọn skin, ID, xử lý tài nguyên skin, avatar và giao diện web.
+- Giữ endpoint game_notice.txt và gói OUT trong mã nguồn để tiếp tục đối chiếu; không đưa chúng vào file mod.
+- Biến KMM_USE_SUPPLIED_LUA_PACK cũ không bật lại gói trong bản này.
+- Thông báo trong game tạm dừng. Chưa xác minh khả năng giữ mod sau khi mở lại.
+
+Cập nhật và thử:
+1. Thay đầy đủ 9 file gốc trong ZIP và triển khai lại Railway. Không trộn các phần app hoặc bundle.json của hai bản.
+2. Khôi phục/repair tài nguyên bằng chức năng chính thức của game hoặc khôi phục bản sao tài nguyên sạch tương ứng. File mod mới KHÔNG tự xóa hay sửa các gói Lua đã cài trước đó.
+3. Mở game chưa cài mod. Nếu vẫn văng, dừng thử mod và lấy crash log; cần xử lý tài nguyên sạch trước.
+4. Nếu game sạch mở bình thường, tạo file mod MỚI chỉ với một skin, chọn đúng nền tảng rồi cài.
+5. Kiểm tra sảnh, vào trận và thoát/mở lại. Ghi riêng việc còn văng, skin đúng và có tải lại tài nguyên hay không.
+6. Nếu vẫn văng, gửi ZIP mod vừa cài, tên công cụ cài và log lỗi để tiếp tục đối chiếu.
+
+Trên iOS có thể tìm log trong Cài đặt > Quyền riêng tư & Bảo mật > Phân tích & Cải tiến > Dữ liệu phân tích; chọn mục của game ở đúng thời điểm văng nếu có. Không phải máy nào cũng lưu log.
+
+Trạng thái: thay đổi giảm phạm vi ghi đè và khoanh vùng lỗi, chưa phải bằng chứng đã sửa lỗi văng hay mất mod hoàn toàn.
+
