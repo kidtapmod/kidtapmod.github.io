@@ -8,34 +8,35 @@ Deploy xong tải lại trang và tạo ZIP mới, không dùng ZIP lịch sử 
 
 Chi tiết: app/KMM_KET_QUA_VA_HUONG_DAN.txt sau khi giải nén nguồn. Ảnh: app/KMM_PREVIEW.
 
-KONGMEMOD — TẠM NGỪNG GÓI LUA ĐỂ KHOANH VÙNG LỖI VĂNG GAME
+KONGMEMOD — THÔNG BÁO GIỮ NGUYÊN BỐ CỤC MÃ LUA
 
-Triệu chứng người dùng báo: vào sảnh chỉ hiện một phần giao diện rồi game tự thoát.
-Chưa có crash log, chưa tái hiện trên thiết bị nên chưa xác định được nguyên nhân.
+Kết quả người dùng đã xác nhận:
+Bản Tulen Gojo dùng OUT nguyên bản không mất skin và có thông báo TD.
+Kết quả này chưa xác minh bản tùy chỉnh Kongmemod.
 
-Phát hiện đã kiểm tra:
-- Bản trước thay toàn bộ KernelLua.pkg.bytes và StableSystems_3.pkg.bytes bằng gói OUT.
-- Gói có mã khởi chạy trong sảnh và tải thông báo qua mạng.
-- Endpoint thông báo đang trả HTTP 200, UTF-8 và đúng nội dung Kongmemod. Điều này không chứng minh mã trong game tương thích.
-- Kiểm tra SHA-256, CRC hoặc dựng lại payload không thay thế được kiểm tra chạy trong game.
+Đối chiếu lỗi trước:
+Bản tùy chỉnh trước thêm một hằng số số nguyên vào strict_lua.bytes, làm mã dài thêm 9 byte.
+Chưa có crash log nên chưa chứng minh thay đổi này là nguyên nhân văng.
+Bản này dùng đường dẫn cấu hình khác để không cần thêm hằng số.
 
-Thay đổi bản này:
-- Tạm ngừng tích hợp OUT, cả hai gói Lua đều không có trong ZIP mod tạo mới.
-- Cả bản Lua đi kèm mã nguồn cũng không được ghi đè lên tài nguyên game.
-- Giữ luồng chọn skin, ID, xử lý tài nguyên skin, avatar và giao diện web.
-- Giữ endpoint game_notice.txt và gói OUT trong mã nguồn để tiếp tục đối chiếu; không đưa chúng vào file mod.
-- Biến KMM_USE_SUPPLIED_LUA_PACK cũ không bật lại gói trong bản này.
-- Thông báo trong game tạm dừng. Chưa xác minh khả năng giữ mod sau khi mở lại.
+Phạm vi sửa:
+- Độ dài mã Lua, bảng hằng số, cấu trúc hàm và dữ liệu dòng giữ nguyên bản OUT.
+- Chỉ sửa các lệnh nạp byte của URL cấu hình thông báo. Payload IFix chỉ thay URL 80 byte.
+- 25 thành viên khác trong KernelLua và toàn bộ StableSystems_3 giữ nguyên.
+- Không bổ sung hay sửa logic kiểm tra tài nguyên của OUT.
+- Giữ nội dung thông báo Kongmemod, website kongmemod.github.io, TikTok @wukongmemod.
+- Nút Website mở https://web-production-b2d7d.up.railway.app/.
+- Giữ giao diện, avatar và logic chọn/tạo tài nguyên skin.
 
-Cập nhật và thử:
-1. Thay đầy đủ 9 file gốc trong ZIP và triển khai lại Railway. Không trộn các phần app hoặc bundle.json của hai bản.
-2. Khôi phục/repair tài nguyên bằng chức năng chính thức của game hoặc khôi phục bản sao tài nguyên sạch tương ứng. File mod mới KHÔNG tự xóa hay sửa các gói Lua đã cài trước đó.
-3. Mở game chưa cài mod. Nếu vẫn văng, dừng thử mod và lấy crash log; cần xử lý tài nguyên sạch trước.
-4. Nếu game sạch mở bình thường, tạo file mod MỚI chỉ với một skin, chọn đúng nền tảng rồi cài.
-5. Kiểm tra sảnh, vào trận và thoát/mở lại. Ghi riêng việc còn văng, skin đúng và có tải lại tài nguyên hay không.
-6. Nếu vẫn văng, gửi ZIP mod vừa cài, tên công cụ cài và log lỗi để tiếp tục đối chiếu.
+Cập nhật:
+1. Thay đủ 9 file gốc trong ZIP; triển khai lại Railway, không trộn các phần app/bundle của các bản.
+2. Nếu từng đặt KMM_USE_SUPPLIED_LUA_PACK=0, đổi thành 1 để bật gói.
+3. Mở https://web-production-b2d7d.up.railway.app/api/game-notice.txt/v/kongmemod00000 bằng Safari. Phải thấy nội dung Kongmemod, không phải trang lỗi. Bước này cần hoàn thành trước khi cài mod.
+4. Tạo file mod MỚI, ban đầu chọn Tulen Satoru Gojo để so với bản nguyên bản đã thử.
+5. Khôi phục tài nguyên game sạch để tránh trộn Lua giữa các lần thử, rồi cài file mới.
+6. Kiểm tra vào sảnh, thông báo, nút Website, skin trong trận và thoát hẳn/mở lại vài lần.
+7. Nếu bị văng, dùng lại bản OUT nguyên bản đã chạy được và gửi crash log. Không tiếp tục khẳng định bản tùy chỉnh đã sửa hoàn toàn.
 
-Trên iOS có thể tìm log trong Cài đặt > Quyền riêng tư & Bảo mật > Phân tích & Cải tiến > Dữ liệu phân tích; chọn mục của game ở đúng thời điểm văng nếu có. Không phải máy nào cũng lưu log.
-
-Trạng thái: thay đổi giảm phạm vi ghi đè và khoanh vùng lỗi, chưa phải bằng chứng đã sửa lỗi văng hay mất mod hoàn toàn.
+Đã kiểm tra được trên máy: cấu trúc bytecode và payload, HTTP cấu hình nội bộ, CRC, mã kiểm tra và dữ liệu skin của các chế độ xuất.
+Chưa xác minh trên thiết bị: bản tùy chỉnh có hết văng, hiện đúng popup, mở được liên kết và giữ skin sau khởi động lại.
 
