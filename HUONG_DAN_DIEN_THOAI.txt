@@ -7,36 +7,3 @@ Tải đủ 9 file lên thay bản cũ. Start Command: python start_web.py. Gi�
 Deploy xong tải lại trang và tạo ZIP mới, không dùng ZIP lịch sử cũ.
 
 Chi tiết: app/KMM_KET_QUA_VA_HUONG_DAN.txt sau khi giải nén nguồn. Ảnh: app/KMM_PREVIEW.
-
-KONGMEMOD — THÔNG BÁO GIỮ NGUYÊN BỐ CỤC MÃ LUA
-
-Kết quả người dùng đã xác nhận:
-Bản Tulen Gojo dùng OUT nguyên bản không mất skin và có thông báo TD.
-Kết quả này chưa xác minh bản tùy chỉnh Kongmemod.
-
-Đối chiếu lỗi trước:
-Bản tùy chỉnh trước thêm một hằng số số nguyên vào strict_lua.bytes, làm mã dài thêm 9 byte.
-Chưa có crash log nên chưa chứng minh thay đổi này là nguyên nhân văng.
-Bản này dùng đường dẫn cấu hình khác để không cần thêm hằng số.
-
-Phạm vi sửa:
-- Độ dài mã Lua, bảng hằng số, cấu trúc hàm và dữ liệu dòng giữ nguyên bản OUT.
-- Chỉ sửa các lệnh nạp byte của URL cấu hình thông báo. Payload IFix chỉ thay URL 80 byte.
-- 25 thành viên khác trong KernelLua và toàn bộ StableSystems_3 giữ nguyên.
-- Không bổ sung hay sửa logic kiểm tra tài nguyên của OUT.
-- Giữ nội dung thông báo Kongmemod, website kongmemod.github.io, TikTok @wukongmemod.
-- Nút Website mở https://web-production-b2d7d.up.railway.app/.
-- Giữ giao diện, avatar và logic chọn/tạo tài nguyên skin.
-
-Cập nhật:
-1. Thay đủ 9 file gốc trong ZIP; triển khai lại Railway, không trộn các phần app/bundle của các bản.
-2. Nếu từng đặt KMM_USE_SUPPLIED_LUA_PACK=0, đổi thành 1 để bật gói.
-3. Mở https://web-production-b2d7d.up.railway.app/api/game-notice.txt/v/kongmemod00000 bằng Safari. Phải thấy nội dung Kongmemod, không phải trang lỗi. Bước này cần hoàn thành trước khi cài mod.
-4. Tạo file mod MỚI, ban đầu chọn Tulen Satoru Gojo để so với bản nguyên bản đã thử.
-5. Khôi phục tài nguyên game sạch để tránh trộn Lua giữa các lần thử, rồi cài file mới.
-6. Kiểm tra vào sảnh, thông báo, nút Website, skin trong trận và thoát hẳn/mở lại vài lần.
-7. Nếu bị văng, dùng lại bản OUT nguyên bản đã chạy được và gửi crash log. Không tiếp tục khẳng định bản tùy chỉnh đã sửa hoàn toàn.
-
-Đã kiểm tra được trên máy: cấu trúc bytecode và payload, HTTP cấu hình nội bộ, CRC, mã kiểm tra và dữ liệu skin của các chế độ xuất.
-Chưa xác minh trên thiết bị: bản tùy chỉnh có hết văng, hiện đúng popup, mở được liên kết và giữ skin sau khởi động lại.
-
