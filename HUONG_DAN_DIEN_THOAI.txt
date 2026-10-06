@@ -1,9 +1,0 @@
-KMM SKIN STUDIO — KHÔI PHỤC DỮ LIỆU SKIN
-
-Đã khôi phục bảng skin từ pack tham khảo cùng phiên bản; đã mở lại tạo file. Giữ giao diện và avatar KMM.
-Kiểm tra Android/iOS/Cả 2 trên máy chủ đã qua; chưa xác minh giữ skin sau khi mở lại game trên thiết bị.
-
-Tải đủ 9 file lên thay bản cũ. Start Command: python start_web.py. Giữ Variables và Volume.
-Deploy xong tải lại trang và tạo ZIP mới, không dùng ZIP lịch sử cũ.
-
-Chi tiết: app/KMM_KET_QUA_VA_HUONG_DAN.txt sau khi giải nén nguồn. Ảnh: app/KMM_PREVIEW.
