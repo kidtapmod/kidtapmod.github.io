@@ -105,6 +105,12 @@ def skin_summary(hero,name,sid):
             'label':GALLERY.get(hero,{}).get('labels',{}).get(str(sid)),
             'extras':FEATURES.get(sid,[])}
 
+def gallery_skins(hero):
+    order={sid:i for i,sid in enumerate(GALLERY.get(hero,{}).get('order',[]))}
+    rows=[skin_summary(hero,n,sid) for n,sid in CAT[hero].items()]
+    rows.sort(key=lambda skin:order.get(str(skin['id']),10000))
+    return rows
+
 def fail(text, status=400):
     return web.json_response({'error':text},status=status)
 
@@ -161,13 +167,13 @@ async def heroes(request):
 async def hero_skins(request):
     name=request.query.get('hero','')
     if name not in CAT:return fail('Không tìm thấy tướng.',404)
-    return web.json_response({'name':name,'skins':[skin_summary(name,n,sid) for n,sid in CAT[name].items()]})
+    return web.json_response({'name':name,'skins':gallery_skins(name)})
 
 async def all_skins(request):
     items=[]
     for name in sorted(CAT,key=normal):
         h=summary(name)
-        h['skins']=[skin_summary(name,n,sid) for n,sid in CAT[name].items()]
+        h['skins']=gallery_skins(name)
         items.append(h)
     return web.json_response({'heroes':items,'totalHeroes':len(items),'totalSkins':sum(len(x) for x in CAT.values())})
 

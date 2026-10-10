@@ -34,7 +34,7 @@ class ResetDeploymentTests(unittest.TestCase):
             self.assertEqual((target / 'web_index.html').read_bytes(), (ROOT / 'web_index.html').read_bytes())
             for name, path in reset_files('1.64.1').items():
                 self.assertEqual((target / 'ResetFiles/1.64.1' / name).read_bytes(), path.read_bytes())
-                self.assertEqual((target / 'Resources_1/1.64.1' / name).read_bytes(), path.read_bytes())
+                self.assertEqual((target / 'Resources_1/1.64.1' / name).read_bytes(), (ROOT / 'Resources_1/1.64.1' / name).read_bytes())
             self.assertTrue((target / 'assets/roles/28.png').is_file())
             self.assertEqual(keep.read_text(), 'keep')
 

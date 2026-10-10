@@ -1,0 +1,1 @@
+Bộ OUT-Kongmod mới được giữ ở đây để đối chiếu. Chưa áp dụng tự động vì sau bản này người dùng báo game kẹt trước sảnh. Bản chạy hiện tại khôi phục bộ reset trong Botweb gốc. Không chép đè thủ công khi chưa kiểm thử trên máy thật.
