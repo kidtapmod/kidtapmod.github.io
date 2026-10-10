@@ -1,0 +1,19 @@
+BOTWEB — GIAO DIỆN THEO NHANMOD + RESET KONGMOD
+
+1. Bản full: dùng thư mục Botweb-main làm source thay bản hiện tại.
+2. Bản patch: giải nén và chép toàn bộ nội dung vào thư mục source có start_web.py, ghi đè các file trùng. Không xóa những file khác.
+3. Giữ nguyên biến môi trường và ổ lưu dữ liệu của bản đang chạy; sau đó deploy/khởi động lại như trước. Lệnh khởi động giữ nguyên: python start_web.py.
+4. Không xóa WebData, WebJobs, volume hoặc thư mục WEB_STORAGE_DIR. Patch không chứa dữ liệu người dùng/admin để ghi đè. Nếu dịch vụ chưa gắn ổ lưu bền vững thì việc deploy lại vẫn có thể làm mất dữ liệu.
+
+ĐÃ CẬP NHẬT
+- Giao diện nền tím tối, tìm kiếm và bộ lọc vai trò theo nhanmod; ảnh tướng/skin và ảnh xem trước lớn.
+- Giữ source tạo mod Botweb, API nhiệm vụ, lịch sử, admin, cấu hình gói nhanh và giới hạn chọn từ admin (mặc định 30).
+- Giữ cả Android, iOS và gói cả hai; tùy chọn hiệu ứng, nút bấm và thông báo hạ.
+- Thay hai file reset bằng đúng byte của OUT-Kongmod.7z; cập nhật manifest SHA-256.
+- Khởi động từ bundle cũng áp dụng assets, metadata và file reset mới.
+
+KIỂM TRA
+- 6 bài kiểm tra tự động đã qua.
+- Kiểm tra trình duyệt: tìm kiếm, lọc vai trò, chọn skin, ảnh preview, lưu lựa chọn sau reload, hộp chọn kiểu mod, lịch sử, cài đặt; không ghi nhận lỗi JavaScript.
+- Kiểm tra reset trong bố cục ZIP Android/iOS và khi khởi động qua start_web.py.
+- Chưa kiểm thử cài file đầu ra trong game trên thiết bị thật.
